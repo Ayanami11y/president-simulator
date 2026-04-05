@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美国总统模拟器</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Special+Elite&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f4f0e6;
+    --ink: #1a1208;
+    --red: #b91c1c;
+    --gold: #b45309;
+    --gray: #6b7280;
+    --border: #8b7355;
+    --highlight: #fef3c7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #2d2416;
+    background-image: 
+      repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(0,0,0,0.05) 28px, rgba(0,0,0,0.05) 29px);
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 20px;
+    font-family: 'Libre Baskerville', serif;
+  }
+
+  .newspaper {
+    max-width: 860px;
+    width: 100%;
+    background: var(--paper);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E");
+    box-shadow: 0 0 60px rgba(0,0,0,0.6), 4px 4px 0 #8b7355;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Header masthead */
+  .masthead {
+    border-bottom: 4px double var(--ink);
+    padding: 16px 24px 12px;
+    text-align: center;
+    position: relative;
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .masthead-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-family: 'Special Elite', cursive;
+    font-size: 11px;
+    letter-spacing: 1px;
+    opacity: 0.7;
+  }
+
+  .masthead h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 52px);
+    font-weight: 900;
+    letter-spacing: -1px;
+    line-height: 1;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+  }
+
+  .masthead h1 span { color: #f59e0b; }
+
+  .masthead-sub {
+    font-family: 'Special Elite', cursive;
+    font-size: 13px;
+    letter-spacing: 3px;
+    margin-top: 4px;
+    opacity: 0.8;
+  }
+
+  .eagle-icon {
+    font-size: 22px;
+    margin: 6px 0;
+    opacity: 0.8;
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 3px solid var(--ink);
+    background: var(--ink);
+  }
+
+  .stat-item {
+    padding: 10px 14px;
+    text-align: center;
+    border-right: 1px solid rgba(255,255,255,0.15);
+    position: relative;
+  }
+
+  .stat-item:last-child { border-right: none; }
+
+  .stat-label {
+    font-family: 'Special Elite', cursive;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.5);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--paper);
+    display: block;
+    line-height: 1;
+  }
+
+  .stat-bar-wrap {
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+
+  .stat-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .bar-approval { background: #22c55e; }
+  .bar-economy  { background: #f59e0b; }
+  .bar-military { background: #3b82f6; }
+  .bar-media    { background: #a855f7; }
+
+  .stat-delta {
+    font-family: 'Special Elite', cursive;
+    font-size: 10px;
+    position: absolute;
+    top: 8px; right: 8px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .stat-delta.show { opacity: 1; animation: fadeUp 1.5s forwards; }
+  .delta-pos { color: #4ade80; }
+  .delta-neg { color: #f87171; }
+
+  @keyframes fadeUp {
+    0%   { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-20px); }
+  }
+
+  /* Day banner */
+  .day-banner {
+    background: var(--red);
+    color: white;
+    text-align: center;
+    padding: 6px;
+    font-family: 'Special Elite', cursive;
+    font-size: 12px;
+    letter-spacing: 3px;
+  }
+
+  /* Main content */
+  .main-content {
+    padding: 28px 32px;
+  }
+
+  /* Headline */
+  .headline-wrap {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+  }
+
+  .breaking-tag {
+    display: inline-block;
+    background: var(--red);
+    color: white;
+    font-family: 'Special Elite', cursive;
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 3px 8px;
+    margin-bottom: 10px;
+  }
+
+  .event-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(20px, 4vw, 32px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+
+  .event-dateline {
+    font-family: 'Special Elite', cursive;
+    font-size: 11px;
+    color: var(--gray);
+    letter-spacing: 1px;
+  }
+
+  /* Event body */
+  .event-body {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 600px) {
+    .event-body { grid-template-columns: 1fr; }
+    .event-image { order: -1; }
+  }
+
+  .event-text {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--ink);
+    min-height: 100px;
+  }
+
+  .event-text p + p { margin-top: 12px; }
+
+  .event-image {
+    border: 2px solid var(--border);
+    background: var(--ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    min-height: 160px;
+  }
+
+  .event-emoji {
+    font-size: 72px;
+    filter: grayscale(0.3);
+    line-height: 1;
+  }
+
+  .event-caption {
+    font-family: 'Special Elite', cursive;
+    font-size: 10px;
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    margin-top: 8px;
+    letter-spacing: 1px;
+  }
+
+  /* Choices */
+  .choices-header {
+    font-family: 'Special Elite', cursive;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--gray);
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--border);
+    padding: 6px 0;
+    margin-bottom: 16px;
+  }
+
+  .choices-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 500px) {
+    .choices-grid { grid-template-columns: 1fr; }
+  }
+
+  .choice-btn {
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    padding: 14px 16px;
+    text-align: left;
+    cursor: pointer;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--ink);
+    position: relative;
+    transition: all 0.15s;
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+
+  .choice-btn:hover:not(:disabled) {
+    background: var(--ink);
+    color: var(--paper);
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--border);
+  }
+
+  .choice-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .choice-letter {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 13px;
+    text-align: center;
+    line-height: 22px;
+    margin-right: 8px;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  .choice-btn:hover:not(:disabled) .choice-letter {
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  /* Result panel */
+  .result-panel {
+    display: none;
+    background: var(--highlight);
+    border: 2px solid var(--gold);
+    padding: 18px 20px;
+    margin-bottom: 24px;
+    border-left: 6px solid var(--gold);
+  }
+
+  .result-panel.show { display: block; animation: slideIn 0.4s; }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-label {
+    font-family: 'Special Elite', cursive;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .result-text {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+
+  .result-effects {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+
+  .effect-tag {
+    font-family: 'Special Elite', cursive;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+  }
+  .effect-pos { background: #dcfce7; color: #166534; }
+  .effect-neg { background: #fee2e2; color: #991b1b; }
+
+  /* Next button */
+  .next-btn {
+    display: none;
+    width: 100%;
+    padding: 14px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+  }
+
+  .next-btn:hover {
+    background: var(--red);
+  }
+
+  .next-btn.show { display: block; animation: slideIn 0.4s 0.3s both; }
+
+  /* Footer */
+  .newspaper-footer {
+    border-top: 3px double var(--ink);
+    padding: 10px 24px;
+    text-align: center;
+    font-family: 'Special Elite', cursive;
+    font-size: 10px;
+    color: var(--gray);
+    letter-spacing: 2px;
+    background: rgba(0,0,0,0.03);
+  }
+
+  /* Game Over */
+  .gameover-screen {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    color: var(--paper);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    padding: 40px;
+    text-align: center;
+  }
+
+  .gameover-screen.show { display: flex; animation: slideIn 0.6s; }
+
+  .gameover-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 8vw, 72px);
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+
+  .gameover-emoji { font-size: 80px; margin-bottom: 16px; }
+
+  .gameover-reason {
+    font-family: 'Special Elite', cursive;
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 8px;
+  }
+
+  .gameover-subtitle {
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 480px;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 32px;
+  }
+
+  .gameover-score {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    color: #f59e0b;
+    margin-bottom: 32px;
+    letter-spacing: 1px;
+  }
+
+  .restart-btn {
+    background: var(--red);
+    color: white;
+    border: none;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 14px 40px;
+    cursor: pointer;
+    letter-spacing: 3px;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  .restart-btn:hover { background: #991b1b; transform: scale(1.05); }
+
+  /* Typewriter */
+  .typewriter::after {
+    content: '|';
+    animation: blink 0.7s infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
+  /* Transition overlay */
+  .transition-flash {
+    position: fixed; inset: 0;
+    background: white;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 999;
+    transition: opacity 0.15s;
+  }
+  .transition-flash.flash { opacity: 0.7; }
+
+  /* Progress bar */
+  .term-progress {
+    height: 3px;
+    background: rgba(255,255,255,0.1);
+    position: relative;
+  }
+  .term-progress-fill {
+    height: 100%;
+    background: #f59e0b;
+    transition: width 0.8s;
+  }
+</style>
+</head>
+<body>
+
+<div class="transition-flash" id="flashOverlay"></div>
+
+<div class="newspaper" id="mainGame">
+
+  <!-- Masthead -->
+  <div class="masthead">
+    <div class="masthead-top">
+      <span>VOL. I, NO. <span id="currentDay">1</span></span>
+      <span id="currentDate">MONDAY, JAN 20, 2025</span>
+      <span>PRICE: FREE</span>
+    </div>
+    <div class="eagle-icon">🦅</div>
+    <h1>THE WHITE HOUSE <span>DAILY</span></h1>
+    <div class="masthead-sub">YOUR PRESIDENCY · YOUR CHOICES · YOUR LEGACY</div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-label">民意支持</span>
+      <span class="stat-value" id="statApproval">60</span>
+      <div class="stat-bar-wrap">
+        <div class="stat-bar-fill bar-approval" id="barApproval" style="width:60%"></div>
+      </div>
+      <span class="stat-delta" id="deltaApproval"></span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">经济指数</span>
+      <span class="stat-value" id="statEconomy">55</span>
+      <div class="stat-bar-wrap">
+        <div class="stat-bar-fill bar-economy" id="barEconomy" style="width:55%"></div>
+      </div>
+      <span class="stat-delta" id="deltaEconomy"></span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">军事力量</span>
+      <span class="stat-value" id="statMilitary">70</span>
+      <div class="stat-bar-wrap">
+        <div class="stat-bar-fill bar-military" id="barMilitary" style="width:70%"></div>
+      </div>
+      <span class="stat-delta" id="deltaMilitary"></span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">媒体评分</span>
+      <span class="stat-value" id="statMedia">50</span>
+      <div class="stat-bar-wrap">
+        <div class="stat-bar-fill bar-media" id="barMedia" style="width:50%"></div>
+      </div>
+      <span class="stat-delta" id="deltaMedia"></span>
+    </div>
+  </div>
+
+  <!-- Term progress -->
+  <div class="term-progress">
+    <div class="term-progress-fill" id="termProgress" style="width:0%"></div>
+  </div>
+
+  <!-- Day banner -->
+  <div class="day-banner">
+    ★ 第 <span id="dayBanner">1</span> 天执政 · 总统任期：4年（<span id="daysLeft">1460</span>天剩余） ★
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    
+    <div class="headline-wrap">
+      <div class="breaking-tag">🔴 BREAKING NEWS</div>
+      <h2 class="event-headline" id="eventHeadline">正在加载今日紧急事件...</h2>
+      <div class="event-dateline">WASHINGTON D.C. — <span id="eventDateline">THE OVAL OFFICE</span></div>
+    </div>
+
+    <div class="event-body">
+      <div class="event-text" id="eventText">
+        <p>加载中...</p>
+      </div>
+      <div class="event-image">
+        <div class="event-emoji" id="eventEmoji">🏛️</div>
+        <div class="event-caption" id="eventCaption">THE WHITE HOUSE</div>
+      </div>
+    </div>
+
+    <div class="choices-header">— 总统先生，您的决定是 —</div>
+
+    <div class="choices-grid" id="choicesGrid"></div>
+
+    <div class="result-panel" id="resultPanel">
+      <div class="result-label">📰 新闻媒体播报</div>
+      <div class="result-text" id="resultText"></div>
+      <div class="result-effects" id="resultEffects"></div>
+    </div>
+
+    <button class="next-btn" id="nextBtn" onclick="nextEvent()">
+      下一个事件 →
+    </button>
+
+  </div>
+
+  <div class="newspaper-footer">
+    © THE WHITE HOUSE DAILY · ALL RIGHTS RESERVED · EST. 2025
+  </div>
+
+  <!-- Game Over Screen -->
+  <div class="gameover-screen" id="gameoverScreen">
+    <div class="gameover-emoji" id="gameoverEmoji">💀</div>
+    <div class="gameover-reason" id="gameoverReason">YOU HAVE BEEN IMPEACHED</div>
+    <h2 class="gameover-title" id="gameoverTitle">任期终止</h2>
+    <p class="gameover-subtitle" id="gameoverSubtitle">国会已对您发起弹劾。</p>
+    <div class="gameover-score" id="gameoverScore"></div>
+    <button class="restart-btn" onclick="restartGame()">🗳️ 再次竞选</button>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// GAME DATA — Events
+// ============================================================
+const EVENTS = [
+  {
+    id: "trade_war",
+    headline: "中国对美国商品加征150%关税",
+    dateline: "BEIJING / WASHINGTON D.C.",
+    text: "北京宣布对价值3000亿美元的美国商品加征150%关税，作为对此前贸易制裁的报复。股市开盘即暴跌4%，制造业协会紧急呼吁总统介入谈判。国务卿正在等候您的指示。",
+    emoji: "📦",
+    caption: "TRADE WAR ESCALATES",
+    choices: [
+      { text: "全面反制：对中国再加200%关税，绝不妥协", effects: { approval: -8, economy: -15, military: +3, media: -10 }, result: "《纽约时报》头版：「总统以强硬姿态回应，但经济学家警告全球经济衰退风险骤升。道琼斯指数再跌600点。」" },
+      { text: "外交谈判：派国务卿前往北京展开紧急对话", effects: { approval: +5, economy: +8, military: 0, media: +12 }, result: "CNN报道：「务实外交赢得掌声，市场反弹。共和党部分鹰派批评总统'软弱'。」" },
+      { text: "联合盟友：召集G7峰会，形成多边施压", effects: { approval: +3, economy: +5, military: +5, media: +8 }, result: "BBC：「总统展现多边主义外交风范，但盟友反应冷淡，会议效果存疑。」" },
+      { text: "拖延战术：宣布'深入研究'，暂不表态", effects: { approval: -5, economy: -3, military: 0, media: -15 }, result: "福克斯新闻讥讽：「总统面对国家危机选择装鸵鸟，华盛顿政界一片哗然。」" }
+    ]
+  },
+  {
+    id: "inflation",
+    headline: "通货膨胀率飙升至9.2%，民众怒火冲天",
+    dateline: "WASHINGTON D.C. — TREASURY DEPT.",
+    text: "劳工统计局最新数据显示CPI同比上涨9.2%，创40年新高。超市货架上普通鸡蛋价格突破8美元一打，汽油均价逼近6美元一加仑。民间抗议声浪迭起，国会要求总统拿出应对方案。",
+    emoji: "💸",
+    caption: "INFLATION HITS 40-YEAR HIGH",
+    choices: [
+      { text: "降价补贴：向低收入家庭发放每月500美元补贴", effects: { approval: +15, economy: -12, military: 0, media: +5 }, result: "ABC新闻：「总统大撒币，民众欢欣鼓舞，但财政部长私下表示'这是饮鸩止渴'。」" },
+      { text: "紧缩政策：支持美联储大幅加息，压制通胀", effects: { approval: -12, economy: +10, military: 0, media: -8 }, result: "《华尔街日报》：「总统做了正确但痛苦的选择，房贷利率暴涨，房主叫苦连天。」" },
+      { text: "开放石油储备：释放战略石油储备压低能源价格", effects: { approval: +8, economy: +5, military: -8, media: +3 }, result: "路透社：「短期内汽油价格下降，但军方对战略储备减少表达严重关切。」" },
+      { text: "甩锅前任：公开指责上届政府的遗留问题", effects: { approval: -3, economy: 0, military: 0, media: -20 }, result: "各大媒体嘲讽：「总统拒绝承担责任，民调显示71%的民众认为此举'幼稚可笑'。」" }
+    ]
+  },
+  {
+    id: "ufo",
+    headline: "五角大楼确认：不明飞行物入侵领空！",
+    dateline: "PENTAGON — TOP SECRET",
+    text: "国防部紧急简报显示，过去72小时内，有17个不明飞行物被雷达捕获，其中3个在加州上空盘旋超过6小时，对F-22战机的拦截毫无反应。参联会主席正等待总统的最高指令。",
+    emoji: "🛸",
+    caption: "UFO BREACH — CLASSIFIED",
+    choices: [
+      { text: "公开透明：向全美民众直播五角大楼简报内容", effects: { approval: +20, economy: -5, military: -5, media: +25 }, result: "社交媒体爆炸：「总统成为史上最坦诚的领导人，支持率飙升，但外国情报机构已分析完直播内容。」" },
+      { text: "军事应对：下令空军采取一切必要手段驱离", effects: { approval: +5, economy: -3, military: +12, media: 0 }, result: "CNN：「三架不明飞行物在无声中消失，军方拒绝透露细节，阴谋论开始蔓延。」" },
+      { text: "科学研究：成立跨部门UFO研究委员会", effects: { approval: +3, economy: -2, military: 0, media: +8 }, result: "《科学美国人》点赞，但《纽约邮报》头版：「官僚机构再现——又一个委员会」。」" },
+      { text: "秘密压制：下令封锁一切消息，否认任何事件", effects: { approval: -10, economy: 0, military: +5, media: -25 }, result: "消息被泄露！《卫报》揭秘：「政府掩盖外星接触证据」，弹劾声浪再起。」" }
+    ]
+  },
+  {
+    id: "hurricane",
+    headline: "五级飓风袭击佛罗里达，百万人无家可归",
+    dateline: "MIAMI, FLORIDA",
+    text: "飓风「伊莎贝拉」以每小时185英里的风速横扫佛罗里达州，130万人断电，超过4万人流离失所。灾区紧急求援，州长声称联邦救灾响应「慢得像蜗牛」。FEMA局长正在等待您的行动令。",
+    emoji: "🌀",
+    caption: "CATEGORY 5 LANDFALL",
+    choices: [
+      { text: "亲赴灾区：总统专机即刻飞往迈阿密", effects: { approval: +18, economy: -5, military: 0, media: +20 }, result: "全美直播总统在废墟中与受灾民众握手，情绪震撼人心。白宫参谋提醒这推迟了三项重要会议。" },
+      { text: "联邦紧急令：调拨100亿美元紧急救灾资金", effects: { approval: +10, economy: -15, military: 0, media: +8 }, result: "钱很快到位，重建工作启动，但国会预算委员会开始质疑财政纪律。" },
+      { text: "军队救援：调派两万国民警卫队驰援灾区", effects: { approval: +12, economy: -5, military: -8, media: +10 }, result: "军队高效救援赢得掌声，但军方对非战斗部署频次过高提出内部抗议。" },
+      { text: "慢速响应：等待损失评估报告后再决策", effects: { approval: -25, economy: 0, military: 0, media: -30 }, result: "灾难性公关：「卡特里娜重演！」媒体狂轰滥炸，白宫电话被打爆，弹劾提案已在路上。" }
+    ]
+  },
+  {
+    id: "ai_regulation",
+    headline: "硅谷AI公司宣布：AGI已实现突破",
+    dateline: "SAN FRANCISCO, CA",
+    text: "一家神秘的初创公司「OpenMind」宣称已开发出超越人类智能的通用人工智能，并计划在两周内向公众开放。技术专家惊呼，各国政府陷入恐慌，科技股涨跌两极分化。您将如何应对这一历史性时刻？",
+    emoji: "🤖",
+    caption: "THE AI SINGULARITY",
+    choices: [
+      { text: "紧急叫停：命令FBI查封OpenMind服务器", effects: { approval: -5, economy: -8, military: +5, media: -15 }, result: "硅谷哗然，科技界大罢工。但盟国情报机构松了口气：「美国终于清醒了。」" },
+      { text: "监管立法：召集国会紧急立法设立AI安全委员会", effects: { approval: +5, economy: +5, military: 0, media: +10 }, result: "历史性的《人工智能安全法案》在72小时内通过，总统被《时代》评为「技术时代的守护者」。" },
+      { text: "积极拥抱：宣布美国将领导全球AI革命", effects: { approval: +8, economy: +20, military: +5, media: +8 }, result: "股市狂欢，科技股全线涨停。但伦理学家和宗教团体开始组织抗议游行。" },
+      { text: "国际协调：召集联合国安理会讨论全球AI治理", effects: { approval: +3, economy: 0, military: 0, media: +15 }, result: "联合国历史性通过AI治理框架，总统获诺贝尔和平奖提名，但实施效果令人存疑。" }
+    ]
+  },
+  {
+    id: "russia",
+    headline: "俄罗斯坦克兵临波兰边境",
+    dateline: "WARSAW, POLAND / NATO HQ",
+    text: "卫星图像显示5万俄军及1200辆坦克在波俄边境集结，普京宣称这是「例行军事演习」。NATO盟国紧急求助华盛顿，波兰总统在电话中声音颤抖。这是美国自冷战以来面临的最高级别军事警戒。",
+    emoji: "⚔️",
+    caption: "COLD WAR 2.0",
+    choices: [
+      { text: "核威慑：将核武器提升至最高警戒状态DEFCON 2", effects: { approval: +3, economy: -10, military: +20, media: -5 }, result: "全球屏息，俄军停止推进。《原子能科学家公报》将末日时钟拨至11:58。" },
+      { text: "增兵欧洲：紧急增派5万美军前往波兰", effects: { approval: +10, economy: -12, military: +15, media: +5 }, result: "坚定的军事承诺稳住了盟友，俄军缓缓后退，但克里姆林宫措辞更加强硬。" },
+      { text: "外交斡旋：致电普京，提议举行峰会", effects: { approval: +5, economy: +3, military: -3, media: +10 }, result: "普京接了电话，同意谈判。鹰派批评「对强盗讲道理」，但市场稳定下来。" },
+      { text: "暧昧中立：宣称「正在密切关注局势发展」", effects: { approval: -15, economy: -8, military: -5, media: -20 }, result: "全球盟友震惊，NATO宣布召开紧急会议讨论「美国是否仍是可靠盟友」。" }
+    ]
+  },
+  {
+    id: "scandal",
+    headline: "白宫内鬼爆料：总统密室录像流出？",
+    dateline: "WASHINGTON D.C. — WEST WING",
+    text: "一名自称前白宫助理的人向媒体泄露了一段「涉及总统私生活的敏感录像」，并威胁称若总统不辞职将全面公开。特勤局已锁定嫌疑人，法律顾问紧急提交三套应对方案。",
+    emoji: "📹",
+    caption: "SCANDAL ROCKS WHITE HOUSE",
+    choices: [
+      { text: "正面反击：召开新闻发布会，公开录像是伪造品", effects: { approval: +5, economy: 0, military: 0, media: -10 }, result: "技术专家验证录像确有剪辑痕迹，但媒体仍保持怀疑，「欲盖弥彰」词条热搜第一。" },
+      { text: "法律行动：授权司法部调查幕后黑手", effects: { approval: +8, economy: 0, military: 0, media: +5 }, result: "调查显示这是外国势力的操纵行动，总统变身「遇袭受害者」，支持率意外回升。" },
+      { text: "沉默处理：无可奉告，让法律顾问应对", effects: { approval: -8, economy: 0, military: 0, media: -18 }, result: "沉默被解读为默认，各大媒体连续72小时轮播「全面分析」，民调跌至危险区。" },
+      { text: "主动认错：承认存在「私人失误」，请求原谅", effects: { approval: +12, economy: 0, military: 0, media: +20 }, result: "勇于担责赢得意外好感。《华盛顿邮报》：「这届总统至少是真实的人。」支持率回升。" }
+    ]
+  },
+  {
+    id: "mars",
+    headline: "NASA宣布：火星发现微生物化石！",
+    dateline: "HOUSTON, TEXAS — NASA JPL",
+    text: "毅力号探测器在火星地下冰层发现确定的生命痕迹，科学家估计这些微生物化石距今约20亿年。这是人类历史上最重大的科学发现，举世震惊。您将如何代表全人类回应这一时刻？",
+    emoji: "🔭",
+    caption: "LIFE ON MARS CONFIRMED",
+    choices: [
+      { text: "全球直播：主持史上最大规模科学新闻发布会", effects: { approval: +25, economy: +5, military: 0, media: +30 }, result: "70亿人同时在线观看，总统发表「人类文明新纪元」演讲，被评为近代最伟大政治时刻之一。" },
+      { text: "追加预算：宣布10年内完成载人火星任务", effects: { approval: +20, economy: -20, military: 0, media: +15 }, result: "科技界欢欣鼓舞，但国会对天文数字的预算陷入激烈争辩，教育和医疗预算被迫压缩。" },
+      { text: "联合国框架：提议建立「宇宙生命保护国际公约」", effects: { approval: +10, economy: 0, military: 0, media: +20 }, result: "外交佳绩，全球赞誉，但批评者认为总统把地球外的事情处理得比地球内的问题还上心。" },
+      { text: "军事优先：以国家安全为由，对发现进行保密处理", effects: { approval: -20, economy: 0, military: +5, media: -35 }, result: "消息被科学家泄露，总统成为「人类历史上最受诅咒的审查者」，国际声誉跌至谷底。" }
+    ]
+  },
+  {
+    id: "pandemic",
+    headline: "新型病毒爆发：WHO宣布全球卫生紧急状态",
+    dateline: "GENEVA / CDC ATLANTA",
+    text: "一种致死率约12%的新型呼吸道病毒已在27个国家出现，美国本土确诊1200例，CDC预测两周内可能突破10万。疫苗研发至少需要6个月，口罩和呼吸机库存严重告急。",
+    emoji: "🦠",
+    caption: "PANDEMIC THREAT LEVEL: CRITICAL",
+    choices: [
+      { text: "全面封锁：立即关闭所有非必要场所和边境", effects: { approval: +5, economy: -25, military: 0, media: +10 }, result: "传播得到控制，但失业率飙升至15%，餐饮和零售业掀起破产潮，中小企业血泪控诉政府。" },
+      { text: "疫苗竞赛：投入500亿美元启动「新曼哈顿计划」", effects: { approval: +15, economy: -15, military: 0, media: +18 }, result: "4个月后疫苗问世，总统被誉为「现代罗斯福」，但巨额赤字让下届政府头疼欲裂。" },
+      { text: "群体免疫：相信自然规律，拒绝过度干预", effects: { approval: -30, economy: +5, military: 0, media: -35 }, result: "公卫专家集体辞职，死亡人数激增，国会启动弹劾调查。这个决定将被载入历史的耻辱柱。" },
+      { text: "科学优先：完全听从CDC和顶尖专家的建议", effects: { approval: +18, economy: -8, military: 0, media: +20 }, result: "「尊重科学」成为本届政府标签，国际社会高度评价，民众接受程度超出预期。" }
+    ]
+  },
+  {
+    id: "debt",
+    headline: "国会拒绝提高债务上限！美国将于72小时内违约",
+    dateline: "U.S. CAPITOL HILL",
+    text: "在党派对立的激烈博弈中，国会以1票之差否决债务上限提案。财政部警告：若72小时内无法解决，美国将历史性违约，触发全球金融海啸。债券市场已开始剧烈震荡。",
+    emoji: "💣",
+    caption: "DEFAULT COUNTDOWN: 72HRS",
+    choices: [
+      { text: "行政令：援引第14修正案，单方面提升债务上限", effects: { approval: +8, economy: +15, military: 0, media: 0 }, result: "宪法学界激烈争论，最高法院宣布受理，但金融危机暂时化解，市场稳定下来。" },
+      { text: "谈判妥协：接受反对党的大部分条件换取通过", effects: { approval: -5, economy: +12, military: -5, media: -5 }, result: "危机解除，但总统的核心议程被大幅削减，媒体分析称「这是政治上的重大失血」。" },
+      { text: "向民众喊话：电视演讲施压国会议员", effects: { approval: +12, economy: +5, military: 0, media: +15 }, result: "民众电话轰炸国会，12名议员被迫改变立场，法案最终以微弱多数通过，总统支持率创新高。" },
+      { text: "静观其变：让市场崩溃给国会施压", effects: { approval: -20, economy: -30, military: 0, media: -25 }, result: "道琼斯下跌3000点，全球股市雪崩，多国央行紧急救市，总统被钉上历史耻辱柱。" }
+    ]
+  }
+];
+
+// ============================================================
+// GAME STATE
+// ============================================================
+let state = {
+  day: 1,
+  approval: 60,
+  economy: 55,
+  military: 70,
+  media: 50,
+  eventHistory: [],
+  currentEventIdx: -1,
+  totalDays: 1460,
+  gameRunning: true
+};
+
+let availableEvents = [...EVENTS];
+let currentEvent = null;
+
+// ============================================================
+// HELPERS
+// ============================================================
+function clamp(v) { return Math.max(0, Math.min(100, v)); }
+
+function getMonthName(m) {
+  return ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"][m];
+}
+
+function getDayLabel(day) {
+  const start = new Date(2025, 0, 20);
+  const d = new Date(start.getTime() + (day - 1) * 86400000);
+  const days = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
+  return `${days[d.getDay()]}, ${getMonthName(d.getMonth())} ${d.getDate()}, ${d.getFullYear()}`;
+}
+
+function showDelta(id, val) {
+  const el = document.getElementById(id);
+  el.classList.remove('show');
+  el.className = 'stat-delta';
+  void el.offsetWidth;
+  el.textContent = (val > 0 ? '+' : '') + val;
+  el.className = 'stat-delta ' + (val >= 0 ? 'delta-pos' : 'delta-neg') + ' show';
+}
+
+function updateStats(effects, animate = true) {
+  const keys = ['approval','economy','military','media'];
+  const ids  = ['Approval','Economy','Military','Media'];
+  
+  keys.forEach((k, i) => {
+    if (effects[k] === undefined) return;
+    const old = state[k];
+    state[k] = clamp(state[k] + effects[k]);
+    
+    if (animate) {
+      showDelta('delta' + ids[i], effects[k]);
+    }
+    
+    document.getElementById('stat' + ids[i]).textContent = state[k];
+    document.getElementById('bar'  + ids[i]).style.width = state[k] + '%';
+  });
+}
+
+function typewrite(el, text, speed = 18, cb) {
+  el.textContent = '';
+  el.classList.add('typewriter');
+  let i = 0;
+  function tick() {
+    if (i < text.length) {
+      el.textContent += text[i++];
+      setTimeout(tick, speed);
+    } else {
+      el.classList.remove('typewriter');
+      if (cb) cb();
+    }
+  }
+  tick();
+}
+
+function flash() {
+  const f = document.getElementById('flashOverlay');
+  f.classList.add('flash');
+  setTimeout(() => f.classList.remove('flash'), 200);
+}
+
+// ============================================================
+// GAME OVER CHECK
+// ============================================================
+function checkGameOver() {
+  if (state.approval <= 5) return { 
+    emoji: '🗳️', reason: 'POPULAR REVOLT',
+    title: '您被弹劾了', 
+    subtitle: '您的民意支持率跌至历史最低点，国会以压倒性多数通过弹劾案。请收拾您在椭圆形办公室的私人物品。'
+  };
+  if (state.economy <= 5) return { 
+    emoji: '📉', reason: 'ECONOMIC COLLAPSE',
+    title: '经济崩溃', 
+    subtitle: '在您的任期内，美国经历了大萧条以来最严重的经济危机。历史学家将您的名字作为反面教材。'
+  };
+  if (state.military <= 5) return { 
+    emoji: '🏳️', reason: 'NATIONAL SECURITY FAILURE',
+    title: '国防瘫痪', 
+    subtitle: '美国武装力量陷入严重危机，敌对势力趁虚而入。您的任期因国家安全失职而提前画上句号。'
+  };
+  if (state.media <= 5) return { 
+    emoji: '📰', reason: 'MEDIA TOTAL BLACKOUT',
+    title: '媒体公敌', 
+    subtitle: '所有主流媒体联合抵制，您的一切声明都无人转播。在信息时代，被媒体抛弃的总统无法治国。'
+  };
+  if (state.day > state.totalDays) return {
+    emoji: '🎉', reason: 'TERM COMPLETED',
+    title: '任期届满', 
+    subtitle: '您成功完成了4年总统任期！历史将如何评价您？这取决于您最终的各项数据。'
+  };
+  return null;
+}
+
+function endGame(reason) {
+  const screen = document.getElementById('gameoverScreen');
+  document.getElementById('gameoverEmoji').textContent = reason.emoji;
+  document.getElementById('gameoverReason').textContent = reason.reason;
+  document.getElementById('gameoverTitle').textContent = reason.title;
+  document.getElementById('gameoverSubtitle').textContent = reason.subtitle;
+  
+  const legacy = getLegacyRating();
+  document.getElementById('gameoverScore').innerHTML = 
+    `执政 ${state.day - 1} 天 &nbsp;·&nbsp; 历史评价：${legacy.label} ${legacy.emoji}<br>
+    民意 ${state.approval} · 经济 ${state.economy} · 军事 ${state.military} · 媒体 ${state.media}`;
+  
+  screen.classList.add('show');
+  state.gameRunning = false;
+}
+
+function getLegacyRating() {
+  const avg = (state.approval + state.economy + state.military + state.media) / 4;
+  if (avg >= 80) return { label: '传奇总统', emoji: '🏆' };
+  if (avg >= 65) return { label: '优秀总统', emoji: '⭐' };
+  if (avg >= 50) return { label: '平庸总统', emoji: '😐' };
+  if (avg >= 35) return { label: '失职总统', emoji: '😞' };
+  return { label: '最差总统', emoji: '💀' };
+}
+
+// ============================================================
+// LOAD EVENT
+// ============================================================
+function loadEvent() {
+  if (!state.gameRunning) return;
+  
+  // Replenish events if exhausted
+  if (availableEvents.length === 0) availableEvents = [...EVENTS];
+  
+  // Pick random event
+  const idx = Math.floor(Math.random() * availableEvents.length);
+  currentEvent = availableEvents.splice(idx, 1)[0];
+  
+  // Update header
+  document.getElementById('currentDay').textContent = state.day;
+  document.getElementById('currentDate').textContent = getDayLabel(state.day);
+  document.getElementById('dayBanner').textContent = state.day;
+  document.getElementById('daysLeft').textContent = Math.max(0, state.totalDays - state.day);
+  document.getElementById('termProgress').style.width = ((state.day / state.totalDays) * 100) + '%';
+  
+  // Update event
+  document.getElementById('eventEmoji').textContent = currentEvent.emoji;
+  document.getElementById('eventCaption').textContent = currentEvent.caption;
+  document.getElementById('eventDateline').textContent = currentEvent.dateline;
+  
+  // Animate headline
+  const headlineEl = document.getElementById('eventHeadline');
+  typewrite(headlineEl, currentEvent.headline, 22);
+  
+  // Animate body text
+  const textEl = document.getElementById('eventText');
+  textEl.innerHTML = '';
+  setTimeout(() => {
+    const p = document.createElement('p');
+    typewrite(p, currentEvent.text, 8);
+    textEl.appendChild(p);
+  }, 600);
+  
+  // Render choices
+  const grid = document.getElementById('choicesGrid');
+  grid.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  currentEvent.choices.forEach((choice, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.innerHTML = `<span class="choice-letter">${letters[i]}</span>${choice.text}`;
+    btn.onclick = () => makeChoice(i);
+    btn.style.animationDelay = (i * 0.1) + 's';
+    grid.appendChild(btn);
+  });
+  
+  // Hide result & next
+  document.getElementById('resultPanel').classList.remove('show');
+  document.getElementById('nextBtn').classList.remove('show');
+}
+
+// ============================================================
+// MAKE CHOICE
+// ============================================================
+function makeChoice(idx) {
+  if (!state.gameRunning) return;
+  
+  const choice = currentEvent.choices[idx];
+  
+  // Disable all buttons
+  document.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
+  
+  // Flash effect
+  flash();
+  
+  // Apply effects
+  updateStats(choice.effects);
+  
+  // Show result
+  const resultPanel = document.getElementById('resultPanel');
+  const resultText  = document.getElementById('resultText');
+  const effectsEl   = document.getElementById('resultEffects');
+  
+  resultText.textContent = '';
+  effectsEl.innerHTML = '';
+  
+  // Effect tags
+  const statNames = { approval: '民意', economy: '经济', military: '军事', media: '媒体' };
+  Object.entries(choice.effects).forEach(([k, v]) => {
+    if (v === 0) return;
+    const tag = document.createElement('span');
+    tag.className = 'effect-tag ' + (v > 0 ? 'effect-pos' : 'effect-neg');
+    tag.textContent = `${statNames[k]} ${v > 0 ? '+' : ''}${v}`;
+    effectsEl.appendChild(tag);
+  });
+  
+  resultPanel.classList.add('show');
+  typewrite(resultText, choice.result, 12);
+  
+  // Show next button after brief delay
+  setTimeout(() => {
+    document.getElementById('nextBtn').classList.add('show');
+  }, 800);
+  
+  // Check game over
+  setTimeout(() => {
+    const gameOver = checkGameOver();
+    if (gameOver) {
+      setTimeout(() => endGame(gameOver), 2000);
+    }
+  }, 1500);
+}
+
+// ============================================================
+// NEXT EVENT
+// ============================================================
+function nextEvent() {
+  // Advance day (random 1-7 days per event for variety)
+  state.day += Math.floor(Math.random() * 5) + 2;
+  
+  flash();
+  
+  // Scroll to top
+  document.querySelector('.newspaper').scrollIntoView({ behavior: 'smooth' });
+  
+  setTimeout(() => {
+    const gameOver = checkGameOver();
+    if (gameOver) {
+      endGame(gameOver);
+    } else {
+      loadEvent();
+    }
+  }, 300);
+}
+
+// ============================================================
+// RESTART
+// ============================================================
+function restartGame() {
+  state = {
+    day: 1,
+    approval: 60,
+    economy: 55,
+    military: 70,
+    media: 50,
+    eventHistory: [],
+    totalDays: 1460,
+    gameRunning: true
+  };
+  availableEvents = [...EVENTS];
+  
+  document.getElementById('gameoverScreen').classList.remove('show');
+  
+  // Reset stats display
+  updateStats({ approval: 0, economy: 0, military: 0, media: 0 }, false);
+  ['Approval','Economy','Military','Media'].forEach(k => {
+    document.getElementById('stat' + k).textContent = state[k.toLowerCase()];
+    document.getElementById('bar'  + k).style.width = state[k.toLowerCase()] + '%';
+  });
+  
+  flash();
+  setTimeout(loadEvent, 400);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+loadEvent();
+</script>
+</body>
+</html>
