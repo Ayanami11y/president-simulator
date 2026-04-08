@@ -353,8 +353,8 @@ const CAMPAIGN_EVENTS = [
   {
     tag: 'SUPER TUESDAY',
     headline: 'THE NIGHT OF FOURTEEN STATES',
-    body: 'Super Tuesday results are coming in live. You're running strong in the South but bleeding support among suburban voters who decide everything.',
-    flavor: '"Super Tuesday isn't decided on Tuesday — it's decided in the months before." — Campaign veteran',
+    body: "Super Tuesday results are coming in live. You're running strong in the South but bleeding support among suburban voters who decide everything.",
+    flavor: '"Super Tuesday isn\'t decided on Tuesday — it\'s decided in the months before." — Campaign veteran',
     choices: [
       {text: 'Fly to three swing states tonight for midnight rallies.', effect: '+Electorate big, -Funds, -Approval (tired look)', fn: s=>{ s.electorate += rand(20,35); s.funds -= rand(10,18); s.approval -= rand(2,6) }},
       {text: 'Stay on TV — give three network interviews before midnight.', effect: '+Approval, +Funds (donor rush)', fn: s=>{ s.approval += rand(6,12); s.funds += rand(8,15) }},
@@ -364,7 +364,7 @@ const CAMPAIGN_EVENTS = [
   {
     tag: 'FUNDRAISING',
     headline: 'CAMPAIGN WAR CHEST CRISIS',
-    body: 'Your campaign manager drops a bombshell: you're running critically low on funds. The last two weeks of ads are at risk. Donors are nervous.',
+    body: 'Your campaign manager drops a bombshell: you\'re running critically low on funds. The last two weeks of ads are at risk. Donors are nervous.',
     flavor: '"Money is the oxygen of politics. Without it, the message suffocates." — Campaign treasurer',
     choices: [
       {text: 'Hold an emergency dinner with Silicon Valley mega-donors.', effect: '+Funds large, -Independent voter image', fn: s=>{ s.funds += rand(20,30); s.approval -= rand(3,7) }},
@@ -391,14 +391,14 @@ const CAMPAIGN_EVENTS = [
     choices: [
       {text: 'Call for comprehensive immigration reform — path to citizenship.', effect: '+Latino vote, +Youth, -Rural EVs', fn: s=>{ s.approval += rand(4,8); s.electorate += rand(5,10) }},
       {text: 'Demand secure borders first — bipartisan enforcement bill.', effect: '+Rural EVs, -Urban approval', fn: s=>{ s.electorate += rand(10,20); s.approval -= rand(2,6) }},
-      {text: 'Call an emergency summit with border states' governors.', effect: '+Credibility, moderate gains', fn: s=>{ s.approval += rand(5,10); s.electorate += rand(6,12) }},
+      {text: 'Call an emergency summit with border states\' governors.', effect: '+Credibility, moderate gains', fn: s=>{ s.approval += rand(5,10); s.electorate += rand(6,12) }},
     ]
   },
   {
     tag: 'ECONOMY',
     headline: 'JOBS REPORT SHOCKS WALL STREET',
     body: 'A surprise jobs report shows 400,000 layoffs in manufacturing. Markets drop 600 points. Your economic credentials are suddenly under the microscope.',
-    flavor: '"It's the economy, stupid — and it's always the economy." — Campaign strategist',
+    flavor: '"It\'\'s the economy, stupid — and it\'\'s always the economy." — Campaign strategist',
     choices: [
       {text: 'Release a 10-point economic revival plan immediately.', effect: '+Approval, +Electorate, -Funds (ads)', fn: s=>{ s.approval += rand(6,12); s.electorate += rand(8,16); s.funds -= rand(8,14) }},
       {text: 'Blame the current administration and campaign on change.', effect: '+Base energy, +Electorate, -Credibility', fn: s=>{ s.electorate += rand(12,22); s.approval += rand(3,7) }},
@@ -420,7 +420,7 @@ const CAMPAIGN_EVENTS = [
     tag: 'YOUTH VOTE',
     headline: 'GEN Z SAYS: "NONE OF THE ABOVE"',
     body: 'A major poll shows voters under 30 calling you "out of touch." Two TikTok influencers with combined 80M followers have gone viral mocking your campaign.',
-    flavor: '"You can't win without the youth vote. But you can't win on the youth vote alone." — Pollster',
+    flavor: '"You can\'\'t win without the youth vote. But you can\'\'t win on the youth vote alone." — Pollster',
     choices: [
       {text: 'Do an unscripted hour-long TikTok live. Take any question.', effect: '+Youth approval, +Electorate, risky optics', fn: s=>{ s.approval += rand(5,12); s.electorate += rand(8,16) }},
       {text: 'Announce student debt relief of $20,000 per borrower.', effect: '+Youth EVs, -Funds (perception), +Approval', fn: s=>{ s.approval += rand(7,13); s.electorate += rand(12,22); s.funds -= rand(6,10) }},
@@ -452,8 +452,8 @@ const CAMPAIGN_EVENTS = [
   {
     tag: 'LIVESTREAM',
     headline: 'THE LIVESTREAM DISASTER',
-    body: 'A technical glitch during your campaign's biggest livestream event has you frozen mid-sentence for 45 agonizing seconds on national television.',
-    flavor: '"Competence is assumed until the moment it isn't." — Campaign advisor',
+    body: 'A technical glitch during your campaign\'\'s biggest livestream event has you frozen mid-sentence for 45 agonizing seconds on national television.',
+    flavor: '"Competence is assumed until the moment it isn\'t." — Campaign advisor',
     choices: [
       {text: 'Laugh it off and improvise — show human charm under pressure.', effect: '+Approval (likability), +Electorate', fn: s=>{ s.approval += rand(5,12); s.electorate += rand(6,14) }},
       {text: 'Cut the feed, fix it, come back stronger with a great policy announcement.', effect: '+Policy credibility, steady approval', fn: s=>{ s.approval += rand(3,7); s.funds -= rand(4,8) }},
@@ -464,7 +464,7 @@ const CAMPAIGN_EVENTS = [
     tag: 'VP SELECTION',
     headline: 'THE VICE PRESIDENTIAL CHOICE',
     body: 'The most consequential decision of your campaign. Three vetted finalists: a swing-state governor, a minority trailblazer, and a former rival with a national base.',
-    flavor: '"The VP pick tells voters who you are, what you value, and whether you're ready to govern." — Former president',
+    flavor: '"The VP pick tells voters who you are, what you value, and whether you\'re ready to govern." — Former president',
     choices: [
       {text: 'Choose the swing-state governor. Pennsylvania is the math.', effect: '+Electorate big (PA/OH/MI), +Funds', fn: s=>{ s.electorate += rand(18,30); s.funds += rand(8,14) }},
       {text: 'Choose the trailblazer — historic, energizing, nationally celebrated.', effect: '+Approval big, +Youth vote, +Electorate', fn: s=>{ s.approval += rand(8,16); s.electorate += rand(12,22) }},
@@ -496,7 +496,7 @@ const CAMPAIGN_EVENTS = [
   {
     tag: 'ELECTION INTERFERENCE',
     headline: 'FOREIGN INTERFERENCE ALERT',
-    body: 'U.S. intelligence confirms a foreign state actor is running a coordinated influence campaign against you. The President has been briefed. It's now public.',
+    body: 'U.S. intelligence confirms a foreign state actor is running a coordinated influence campaign against you. The President has been briefed. It\'s now public.',
     flavor: '"In the new Cold War, elections are the battlefield." — Intelligence official',
     choices: [
       {text: 'Demand the President declassify the full intelligence report.', effect: '+Approval (transparency), +Electorate', fn: s=>{ s.approval += rand(5,12); s.electorate += rand(8,16) }},
@@ -507,7 +507,7 @@ const CAMPAIGN_EVENTS = [
   {
     tag: 'GROUND GAME',
     headline: 'THE 72-HOUR GROUND GAME',
-    body: 'Your field director reports that door-knocking operations have reached 2.3M households but you're behind in key precincts. Election Day is 72 hours away.',
+    body: 'Your field director reports that door-knocking operations have reached 2.3M households but you\'re behind in key precincts. Election Day is 72 hours away.',
     flavor: '"Field operations win elections that polls say are impossible." — Field director',
     choices: [
       {text: 'Double volunteer shifts — activate every contact list you have.', effect: '+Electorate moderate, +Approval (momentum)', fn: s=>{ s.electorate += rand(10,20); s.approval += rand(3,7) }},
@@ -518,7 +518,7 @@ const CAMPAIGN_EVENTS = [
   {
     tag: 'ELECTION EVE',
     headline: 'ELECTION EVE — THE FINAL HOURS',
-    body: 'It's midnight before Election Day. A final internal poll has you within 2 points nationally. Everything hinges on turnout. Your team gives you one last call.',
+    body: 'It\'s midnight before Election Day. A final internal poll has you within 2 points nationally. Everything hinges on turnout. Your team gives you one last call.',
     flavor: '"The votes are cast, the die is thrown. Now we wait." — Campaign manager',
     choices: [
       {text: 'Record a personal video message to undecided voters. Post at midnight.', effect: '+Approval final push, +Electorate', fn: s=>{ s.approval += rand(4,10); s.electorate += rand(6,14) }},
@@ -557,7 +557,7 @@ const PRESIDENCY_EVENTS = [
     tag: 'ECONOMY',
     headline: 'RECESSION FEARS GRIP WALL STREET',
     body: 'Markets plunge 18% in three weeks. Unemployment spikes to 7.2%. Your first major economic crisis has arrived faster than anyone expected.',
-    quote: '"The economy doesn't care about your election mandate." — Fed Chairman',
+    quote: '"The economy doesn\'t care about your election mandate." — Fed Chairman',
     choices: [
       {text: 'Emergency stimulus package — $2 trillion. Spend now, worry later.', fn: s=>{ s.pEconomy+=rand(14,22); s.pApproval+=rand(6,12); s.pMedia-=rand(4,8) }},
       {text: 'Austerity measures — cut spending, restore fiscal confidence.', fn: s=>{ s.pEconomy+=rand(6,12); s.pApproval-=rand(8,14) }},
@@ -590,7 +590,7 @@ const PRESIDENCY_EVENTS = [
     tag: 'GUN CONTROL',
     headline: 'MASS SHOOTING AT ELEMENTARY SCHOOL',
     body: 'A gunman kills 19 children and 2 teachers at an elementary school in Ohio. The nation mourns. Congress is paralyzed. Vigils light up every state capital.',
-    quote: '"We've been here before. That's the tragedy." — Grief counselor',
+    quote: '"We\'ve been here before. That\'s the tragedy." — Grief counselor',
     choices: [
       {text: 'Push for universal background checks and red flag laws.', fn: s=>{ s.pApproval+=rand(8,16); s.pMedia+=rand(8,14); s.pMilitary-=rand(2,5) }},
       {text: 'Focus on mental health funding and school security.', fn: s=>{ s.pApproval+=rand(4,9); s.pMedia+=rand(3,7) }},
@@ -600,7 +600,7 @@ const PRESIDENCY_EVENTS = [
   {
     tag: 'IMPEACHMENT',
     headline: 'HOUSE REPUBLICANS FILE ARTICLES OF IMPEACHMENT',
-    body: 'Forty-two House members have signed articles of impeachment over executive overreach. It's largely symbolic but the media coverage is wall-to-wall.',
+    body: 'Forty-two House members have signed articles of impeachment over executive overreach. It\'s largely symbolic but the media coverage is wall-to-wall.',
     quote: '"Impeachment is the constitutional nuclear option." — Constitutional scholar',
     choices: [
       {text: 'Fight it head-on — publish every relevant document. Total transparency.', fn: s=>{ s.pApproval+=rand(6,12); s.pMedia+=rand(8,14) }},
@@ -623,7 +623,7 @@ const PRESIDENCY_EVENTS = [
     tag: 'PANDEMIC',
     headline: 'CDC DECLARES NOVEL RESPIRATORY PANDEMIC',
     body: 'A new pathogen with 40% hospitalization rate is spreading across 12 countries. CDC projects U.S. cases doubling every 7 days. Hard choices ahead.',
-    quote: '"Pandemics don't negotiate. Neither should public health." — CDC Director',
+    quote: '"Pandemics don\'t negotiate. Neither should public health." — CDC Director',
     choices: [
       {text: 'Declare national emergency. Mandate masks. Deploy military medical teams.', fn: s=>{ s.pApproval+=rand(8,16); s.pEconomy-=rand(10,16); s.pMedia+=rand(6,12) }},
       {text: 'Voluntary guidelines. Trust the science, let states decide.', fn: s=>{ s.pApproval-=rand(4,10); s.pEconomy-=rand(5,10) }},
@@ -634,7 +634,7 @@ const PRESIDENCY_EVENTS = [
     tag: 'MEDIA',
     headline: 'WHITE HOUSE PRESS CORPS REVOLT',
     body: 'Your press secretary resigns after a disastrous briefing that trended globally. The press corps is in open war with your administration. Daily leaks are accelerating.',
-    quote: '"The press isn't the enemy — alienating them makes them one." — Media consultant',
+    quote: '"The press isn\'t the enemy — alienating them makes them one." — Media consultant',
     choices: [
       {text: 'Hold personal briefings twice a week. Win them back with access.', fn: s=>{ s.pMedia+=rand(12,20); s.pApproval+=rand(4,8) }},
       {text: 'Appoint a seasoned media veteran as press secretary.', fn: s=>{ s.pMedia+=rand(10,16); s.pApproval+=rand(3,7) }},
@@ -656,7 +656,7 @@ const PRESIDENCY_EVENTS = [
     tag: 'ECONOMY',
     headline: 'INFLATION HITS 9.4% — WORST IN 40 YEARS',
     body: 'Gas prices, groceries, rent — everything costs more. Approval ratings for your economic management are at 31%. The midterms are six months away.',
-    quote: '"Voters don't read GDP reports. They feel inflation at the checkout line." — Treasury Secretary',
+    quote: '"Voters don\'t read GDP reports. They feel inflation at the checkout line." — Treasury Secretary',
     choices: [
       {text: 'Emergency price controls on essential goods. Feed the base.', fn: s=>{ s.pApproval+=rand(6,12); s.pEconomy-=rand(8,14) }},
       {text: 'Work with Fed to aggressively raise rates. Short pain, long gain.', fn: s=>{ s.pEconomy+=rand(10,18); s.pApproval-=rand(6,12) }},
@@ -665,8 +665,8 @@ const PRESIDENCY_EVENTS = [
   },
   {
     tag: 'CLIMATE',
-    headline: 'PARIS ACCORD — AMERICA'S CLIMATE RECKONING',
-    body: 'The new Paris Framework demands 65% emissions reduction by 2030. Your energy secretary says it's technically achievable. Your economic team calls it job-killing.',
+    headline: 'PARIS ACCORD — AMERICA\'S CLIMATE RECKONING',
+    body: 'The new Paris Framework demands 65% emissions reduction by 2030. Your energy secretary says it\'s technically achievable. Your economic team calls it job-killing.',
     quote: '"Every ton of carbon is a debt we leave our children." — Climate envoy',
     choices: [
       {text: 'Sign the enhanced Paris Framework. Full commitment.', fn: s=>{ s.pApproval+=rand(7,13); s.pEconomy-=rand(5,10); s.pMedia+=rand(6,11) }},
@@ -677,8 +677,8 @@ const PRESIDENCY_EVENTS = [
   {
     tag: 'SCANDAL',
     headline: 'CABINET MEMBER ARRESTED FOR CORRUPTION',
-    body: 'Your Secretary of Commerce is arrested on federal corruption charges. The investigation has been running for 18 months. Your administration didn't know — or did it?',
-    quote: '"The fish rots from the head down — at least, that's what they'll say." — Opposition leader',
+    body: 'Your Secretary of Commerce is arrested on federal corruption charges. The investigation has been running for 18 months. Your administration didn\'t know — or did it?',
+    quote: '"The fish rots from the head down — at least, that\'s what they\'ll say." — Opposition leader',
     choices: [
       {text: 'Fire them immediately. Zero tolerance statement. Independent counsel.', fn: s=>{ s.pApproval+=rand(6,12); s.pMedia+=rand(5,10) }},
       {text: 'Wait for due process. Innocent until proven guilty.', fn: s=>{ s.pApproval-=rand(5,10); s.pMedia-=rand(6,11) }},
@@ -688,7 +688,7 @@ const PRESIDENCY_EVENTS = [
   {
     tag: 'EDUCATION',
     headline: 'NATIONAL TEST SCORES IN HISTORIC FREEFALL',
-    body: 'Math and reading scores hit their lowest point in 50 years. Three-quarters of 4th graders can't read proficiently. It's being called a national crisis.',
+    body: 'Math and reading scores hit their lowest point in 50 years. Three-quarters of 4th graders can\'t read proficiently. It\'s being called a national crisis.',
     quote: '"Education is not the answer to the question. Education is the means to the answer to all questions." — Secretary of Education',
     choices: [
       {text: 'Emergency National Education Investment Act. $300B over five years.', fn: s=>{ s.pApproval+=rand(8,14); s.pEconomy-=rand(6,10) }},
@@ -700,7 +700,7 @@ const PRESIDENCY_EVENTS = [
     tag: 'MILITARY',
     headline: 'PENTAGON REQUESTS TROOPS IN TAIWAN STRAIT',
     body: 'Chinese warships have crossed the median line in the Taiwan Strait. Taiwan is on full military alert. The Pentagon wants immediate naval deployment authorization.',
-    quote: '"Deterrence only works if the other side believes you'll act." — Joint Chiefs Chairman',
+    quote: '"Deterrence only works if the other side believes you\'ll act." — Joint Chiefs Chairman',
     choices: [
       {text: 'Authorize full naval deployment. Taiwan Strait Freedom of Navigation.', fn: s=>{ s.pMilitary+=rand(12,20); s.pApproval+=rand(4,8) }},
       {text: 'Diplomatic hotline to Beijing. Back-channel negotiation.', fn: s=>{ s.pApproval+=rand(5,10); s.pMilitary-=rand(3,7) }},
@@ -710,7 +710,7 @@ const PRESIDENCY_EVENTS = [
   {
     tag: 'SOCIAL JUSTICE',
     headline: 'NATIONWIDE PROTESTS OVER POLICE KILLING',
-    body: 'Footage of an unarmed Black man's killing by police has sparked protests in 200 cities. Your response in the first 24 hours will define your civil rights legacy.',
+    body: 'Footage of an unarmed Black man\'s killing by police has sparked protests in 200 cities. Your response in the first 24 hours will define your civil rights legacy.',
     quote: '"Justice delayed is justice denied." — Civil rights leader',
     choices: [
       {text: 'March with protesters. Show solidarity in person.', fn: s=>{ s.pApproval+=rand(8,16); s.pMedia+=rand(8,14); s.pMilitary-=rand(3,7) }},
@@ -721,10 +721,10 @@ const PRESIDENCY_EVENTS = [
   {
     tag: 'SPACE',
     headline: 'CHINA LANDS ON THE MOON — AMERICA IS WATCHING',
-    body: 'China's taikonauts have planted a flag on the lunar south pole — the same site targeted by NASA's Artemis program. Congressional phones are ringing off the hook.',
+    body: 'China\'s taikonauts have planted a flag on the lunar south pole — the same site targeted by NASA\'s Artemis program. Congressional phones are ringing off the hook.',
     quote: '"We choose to go to the Moon not because it is easy, but because it is necessary." — NASA Administrator',
     choices: [
-      {text: 'Double NASA's budget. Announce Artemis Moon base by 2028.', fn: s=>{ s.pApproval+=rand(8,15); s.pEconomy-=rand(5,9); s.pMedia+=rand(6,11) }},
+      {text: 'Double NASA\'s budget. Announce Artemis Moon base by 2028.', fn: s=>{ s.pApproval+=rand(8,15); s.pEconomy-=rand(5,9); s.pMedia+=rand(6,11) }},
       {text: 'Partner with private sector — SpaceX, Blue Origin emergency contract.', fn: s=>{ s.pApproval+=rand(6,11); s.pEconomy+=rand(3,7) }},
       {text: 'Propose joint US-China lunar cooperation. Diplomacy through science.', fn: s=>{ s.pApproval+=rand(4,8); s.pMedia+=rand(4,8) }},
     ]
@@ -765,8 +765,8 @@ const PRESIDENCY_EVENTS = [
   {
     tag: 'MIDTERMS',
     headline: 'MIDTERM ELECTION RESULTS — THE VERDICT IS IN',
-    body: 'Results are in from 435 House races and 34 Senate seats. Your party's fate — and your remaining agenda — will be decided tonight.',
-    quote: '"All elections are local until the returns come in. Then they're all national." — Political scientist',
+    body: 'Results are in from 435 House races and 34 Senate seats. Your party\'s fate — and your remaining agenda — will be decided tonight.',
+    quote: '"All elections are local until the returns come in. Then they\'re all national." — Political scientist',
     choices: [
       {text: 'Claim a mandate. Ambitious second-half agenda. Go big or go home.', fn: s=>{ s.pApproval+=rand(5,10); s.pEconomy+=rand(3,7); s.pMedia+=rand(4,8) }},
       {text: 'Pivot to compromise. Announce bipartisan working groups.', fn: s=>{ s.pApproval+=rand(6,12); s.pMedia+=rand(3,7) }},
@@ -777,7 +777,7 @@ const PRESIDENCY_EVENTS = [
     tag: 'VETERANS',
     headline: 'VA SCANDAL: 300,000 VETERANS DENIED CARE',
     body: 'An Inspector General report reveals 300,000 veterans were placed on secret waiting lists. Dozens may have died waiting for care. The story is on every front page.',
-    quote: '"A nation that does not honor its warriors has no right to call for new ones." — Veteran's advocate',
+    quote: '"A nation that does not honor its warriors has no right to call for new ones." — Veteran\'s advocate',
     choices: [
       {text: 'Fire VA Secretary immediately. National emergency declaration.', fn: s=>{ s.pApproval+=rand(8,14); s.pMedia+=rand(6,11) }},
       {text: '$100B emergency infusion into VA healthcare system.', fn: s=>{ s.pApproval+=rand(7,13); s.pEconomy-=rand(5,9) }},
@@ -787,7 +787,7 @@ const PRESIDENCY_EVENTS = [
   {
     tag: 'ENERGY',
     headline: 'NATIONAL GRID CYBERATTACK BLACKS OUT EASTERN SEABOARD',
-    body: 'A sophisticated cyberattack has knocked out power for 40 million Americans across the Eastern Seaboard. The NSA says it's state-sponsored. Hospitals are on generators.',
+    body: 'A sophisticated cyberattack has knocked out power for 40 million Americans across the Eastern Seaboard. The NSA says it\'s state-sponsored. Hospitals are on generators.',
     quote: '"This is the Pearl Harbor of infrastructure." — Cybersecurity director',
     choices: [
       {text: 'Declare national emergency. Military cyber counter-response authorized.', fn: s=>{ s.pMilitary+=rand(12,20); s.pApproval+=rand(6,11); s.pMedia+=rand(5,10) }},
@@ -799,7 +799,7 @@ const PRESIDENCY_EVENTS = [
     tag: 'SUPREME COURT',
     headline: 'SUPREME COURT VACANCY: YOUR LEGACY PICK',
     body: 'A Supreme Court justice has retired at age 84, handing you a generational appointment. You have three finalists with very different judicial philosophies.',
-    quote: '"A president's most lasting legacy is often the judges they appoint." — Constitutional historian',
+    quote: '"A president\'s most lasting legacy is often the judges they appoint." — Constitutional historian',
     choices: [
       {text: 'Appoint the young progressive firebrand — cement your legacy.', fn: s=>{ s.pApproval+=rand(8,14); s.pMedia+=rand(6,11) }},
       {text: 'Appoint the moderate consensus-builder — win bipartisan praise.', fn: s=>{ s.pApproval+=rand(10,18); s.pMedia+=rand(5,10) }},
@@ -810,7 +810,7 @@ const PRESIDENCY_EVENTS = [
     tag: 'TRADE',
     headline: 'CHINA TRADE WAR ESCALATES — TARIFFS HIT 45%',
     body: 'China retaliates to your tariffs with a 45% tariff on American agricultural exports. Iowa, Nebraska, Kansas farmers are furious. The soy market is collapsing.',
-    quote: '"Trade wars are good and easy to win — until they aren't." — Economic history',
+    quote: '"Trade wars are good and easy to win — until they aren\'t." — Economic history',
     choices: [
       {text: 'Escalate further — China needs to blink first.', fn: s=>{ s.pMilitary+=rand(5,10); s.pApproval-=rand(4,9); s.pEconomy-=rand(6,10) }},
       {text: 'Negotiate emergency trade framework. De-escalate before harvest.', fn: s=>{ s.pEconomy+=rand(8,14); s.pApproval+=rand(4,8) }},
@@ -853,7 +853,7 @@ const PRESIDENCY_EVENTS = [
   {
     tag: 'HOUSING',
     headline: 'HOUSING CRISIS: MEDIAN HOME PRICE HITS $750,000',
-    body: 'The median U.S. home price reaches $750,000. Millennials poll 62% saying they've given up on homeownership. Homelessness in major cities up 35% year-over-year.',
+    body: 'The median U.S. home price reaches $750,000. Millennials poll 62% saying they\'ve given up on homeownership. Homelessness in major cities up 35% year-over-year.',
     quote: '"The American Dream of homeownership is becoming a hallucination." — Housing economist',
     choices: [
       {text: 'New Deal for Housing: Build 2 million affordable units.', fn: s=>{ s.pApproval+=rand(9,16); s.pEconomy-=rand(6,10) }},
@@ -879,7 +879,7 @@ const PRESIDENCY_EVENTS = [
     quote: '"The government that can protect you from speech can use speech to protect itself." — First Amendment scholar',
     choices: [
       {text: 'Veto it. First Amendment is non-negotiable.', fn: s=>{ s.pApproval+=rand(7,13); s.pMedia+=rand(6,11) }},
-      {text: 'Sign it. National security and kids' safety come first.', fn: s=>{ s.pApproval-=rand(4,9); s.pMedia-=rand(5,10) }},
+      {text: 'Sign it. National security and kids\' safety come first.', fn: s=>{ s.pApproval-=rand(4,9); s.pMedia-=rand(5,10) }},
       {text: 'Propose a limited, narrowly tailored alternative. Thread the needle.', fn: s=>{ s.pApproval+=rand(4,8); s.pMedia+=rand(3,7) }},
     ]
   },
@@ -890,26 +890,26 @@ const PRESIDENCY_EVENTS = [
     quote: '"Legacy is built in the second term — if you earn it." — Chief of Staff',
     choices: [
       {text: 'Announce re-election campaign. Bet on your record.', fn: s=>{ s.pApproval+=rand(4,9); s.pMedia+=rand(6,11) }},
-      {text: 'Announce you'll serve one term. Choose country over power.', fn: s=>{ s.pApproval+=rand(10,18); s.pMedia+=rand(8,14) }},
-      {text: 'Say you'll decide later. Keep everyone guessing.', fn: s=>{ s.pApproval+=rand(3,7); s.pMedia+=rand(3,7) }},
+      {text: 'Announce you\'\'ll serve one term. Choose country over power.', fn: s=>{ s.pApproval+=rand(10,18); s.pMedia+=rand(8,14) }},
+      {text: 'Say you\'ll decide later. Keep everyone guessing.', fn: s=>{ s.pApproval+=rand(3,7); s.pMedia+=rand(3,7) }},
     ]
   },
   {
     tag: 'LEGACY',
     headline: 'TIME MAGAZINE: "WHAT WILL YOUR PRESIDENCY MEAN?"',
-    body: 'Time Magazine asks to embed a journalist for a week to capture a "presidency in real time." It's an extraordinary access opportunity — with extraordinary risk.',
+    body: 'Time Magazine asks to embed a journalist for a week to capture a "presidency in real time." It\'s an extraordinary access opportunity — with extraordinary risk.',
     quote: '"History is written by those who showed up." — Time Editor-in-Chief',
     choices: [
       {text: 'Grant full access. Transparency is your legacy.', fn: s=>{ s.pApproval+=rand(6,12); s.pMedia+=rand(10,18) }},
       {text: 'Grant limited access. Control the narrative.', fn: s=>{ s.pApproval+=rand(3,7); s.pMedia+=rand(5,10) }},
-      {text: 'Decline. The presidency isn't a reality show.', fn: s=>{ s.pApproval-=rand(2,6); s.pMedia-=rand(5,10) }},
+      {text: 'Decline. The presidency isn\'t a reality show.', fn: s=>{ s.pApproval-=rand(2,6); s.pMedia-=rand(5,10) }},
     ]
   },
   {
     tag: 'FINAL ACT',
     headline: 'YOUR FINAL DAYS IN OFFICE',
     body: 'The transition team is moving in. The Oval Office art is being catalogued. Your last act as President could define everything — or undermine it all.',
-    quote: '"The last impression is as lasting as the first." — Former President's diary',
+    quote: '"The last impression is as lasting as the first." — Former President\'s diary',
     choices: [
       {text: 'Issue sweeping pardons and clemency for nonviolent offenders.', fn: s=>{ s.pApproval+=rand(8,14); s.pMedia+=rand(6,11) }},
       {text: 'Release a landmark final executive order on climate.', fn: s=>{ s.pApproval+=rand(6,11); s.pEconomy+=rand(3,7) }},
@@ -920,7 +920,7 @@ const PRESIDENCY_EVENTS = [
     tag: 'PARTY POLITICS',
     headline: 'YOUR PARTY TURNS AGAINST YOUR SIGNATURE BILL',
     body: 'Ten senators from your own party are threatening to kill your most important legislation. They want concessions. They want power. They want to be heard.',
-    quote: '"You can get almost anything done in Washington — if you don't care who gets the credit." — Lyndon Johnson',
+    quote: '"You can get almost anything done in Washington — if you don\'t care who gets the credit." — Lyndon Johnson',
     choices: [
       {text: 'Invite them to Camp David. Negotiate behind closed doors.', fn: s=>{ s.pApproval+=rand(5,10); s.pEconomy+=rand(4,8) }},
       {text: 'Go over their heads — rally their constituents publicly.', fn: s=>{ s.pApproval+=rand(7,13); s.pMedia+=rand(5,10) }},
@@ -931,7 +931,7 @@ const PRESIDENCY_EVENTS = [
     tag: 'TERRORISM',
     headline: 'DOMESTIC TERRORIST PLOT FOILED BY FBI',
     body: 'FBI disrupts a plot to bomb three major airports. Forty-seven suspects arrested. Three are government employees. The nation is shaken and demanding answers.',
-    quote: '"Terror thrives on fear. The President's job is to deny it that oxygen." — Homeland Security Secretary',
+    quote: '"Terror thrives on fear. The President\'s job is to deny it that oxygen." — Homeland Security Secretary',
     choices: [
       {text: 'Give a calm, resolute national address. America is strong.', fn: s=>{ s.pApproval+=rand(8,14); s.pMilitary+=rand(6,11) }},
       {text: 'Announce sweeping new domestic counter-terrorism reforms.', fn: s=>{ s.pApproval+=rand(5,10); s.pMilitary+=rand(8,14) }},
@@ -941,7 +941,7 @@ const PRESIDENCY_EVENTS = [
   {
     tag: 'ALLIES',
     headline: 'NATO SUMMIT: ALLIES DEMAND MORE U.S. COMMITMENT',
-    body: 'At the NATO summit in Brussels, 27 allies are asking the U.S. to increase defense spending commitments. America's credibility as the alliance anchor is on the line.',
+    body: 'At the NATO summit in Brussels, 27 allies are asking the U.S. to increase defense spending commitments. America\'s credibility as the alliance anchor is on the line.',
     quote: '"The price of leadership is reliability." — NATO Secretary General',
     choices: [
       {text: 'Announce increased U.S. commitment. Lead from the front.', fn: s=>{ s.pMilitary+=rand(10,18); s.pApproval+=rand(4,8) }},
@@ -957,7 +957,7 @@ const PRESIDENCY_EVENTS = [
     choices: [
       {text: 'Give your first major presidential library speech. Own your legacy.', fn: s=>{ s.pApproval+=rand(6,12); s.pMedia+=rand(8,14) }},
       {text: 'Quietly continue governing. Let the record speak for itself.', fn: s=>{ s.pApproval+=rand(4,8); s.pEconomy+=rand(3,7) }},
-      {text: 'Challenge the narrative. Reframe your presidency's story.', fn: s=>{ s.pApproval+=rand(5,10); s.pMedia+=rand(6,11) }},
+      {text: 'Challenge the narrative. Reframe your presidency\'s story.', fn: s=>{ s.pApproval+=rand(5,10); s.pMedia+=rand(6,11) }},
     ]
   },,
   {
@@ -1420,14 +1420,14 @@ const ENDINGS={
     title:'A MEDIOCRE TERM',
     color:'#aaa',
     sub:'You served your term. The country survived. Is that enough?',
-    desc:'You kept the lights on. You didn't start any wars. The economy limped along. Future presidents will cite you as a cautionary tale of missed opportunities. But you left office with the republic intact — and that, history sometimes decides, is everything.',
+    desc:'You kept the lights on. You didn\'t start any wars. The economy limped along. Future presidents will cite you as a cautionary tale of missed opportunities. But you left office with the republic intact — and that, history sometimes decides, is everything.',
   },
   respected:{
     emoji:'🦅',
     title:'A RESPECTED PRESIDENCY',
     color:'#74c0fc',
-    sub:'They'll put your face on something someday. Maybe.',
-    desc:'Your presidency will be remembered as steady, competent, and occasionally brilliant. You made the hard calls. You led with conviction balanced by wisdom. Americans didn't always agree with you — but they trusted you. That's rarer than it sounds.',
+    sub:'They\'ll put your face on something someday. Maybe.',
+    desc:'Your presidency will be remembered as steady, competent, and occasionally brilliant. You made the hard calls. You led with conviction balanced by wisdom. Americans didn\'t always agree with you — but they trusted you. That\'s rarer than it sounds.',
   },
   legend:{
     emoji:'👑',
