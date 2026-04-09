@@ -235,7 +235,7 @@ body{font-family:"Libre Baskerville",serif;overflow:hidden;background:#000;color
 <div id="presidency" class="screen">
   <div class="np-header">
     <div class="np-name">🏛️ THE AMERICAN CHRONICLE</div>
-    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;padding-right:70px">
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;padding-right:80px">
       <div class="np-date" id="presDate">JANUARY 20, 2025</div>
       <div class="pres-event-counter" id="presEvCnt" style="font-family:Special Elite,cursive;font-size:10px;color:#aaa;letter-spacing:2px">DAY 1 OF 1460</div>
     </div>
@@ -1381,6 +1381,8 @@ function renderCampEvent(){
 function chooseCamp(idx){
   if(G.campChoosing) return;
   G.campChoosing=true;
+  // Disable buttons immediately to prevent double-click deadlock
+  document.querySelectorAll('.ch-btn').forEach(b=>{ b.disabled=true; b.style.opacity='0.5'; });
   const ev=CAMPAIGN_EVENTS[G.campEventIdx];
   const ch=ev.choices[idx];
   
@@ -1647,6 +1649,10 @@ function renderPresEvent(){
 function choosePres(idx){
   if(G.presChoosing) return;
   G.presChoosing=true;
+  
+  // Disable all choice buttons immediately to prevent double-click
+  document.querySelectorAll('.np-ch').forEach(b=>{ b.disabled=true; b.style.opacity='0.5'; });
+  
   const ev=PRESIDENCY_EVENTS[G.presEventIdx];
   const ch=ev.choices[idx];
   
@@ -1688,7 +1694,10 @@ function choosePres(idx){
   setTimeout(()=>{
     G.presChoosing=false;
     try{ renderPresEvent(); }
-    catch(e){ console.error('renderPresEvent error:',e); }
+    catch(e){
+      console.error('renderPresEvent error:',e);
+      G.presChoosing=false;
+    }
   },300);
 }
 
