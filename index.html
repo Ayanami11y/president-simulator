@@ -1556,7 +1556,8 @@ function startPresidency(){
   G.econCrash=false;
   showScreen('presidency');
   renderPresStats();
-  renderPresEvent();
+  // Delay renderPresEvent so the screen transition completes first
+  setTimeout(()=>{ renderPresEvent(); }, 100);
 }
 
 function renderPresStats(){
