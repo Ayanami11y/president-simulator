@@ -62,7 +62,7 @@ body{font-family:"Libre Baskerville",serif;overflow:hidden;background:#000;color
 .cand-bonus{font-size:10px;font-family:"Special Elite",cursive;color:#666;text-align:center;margin-top:10px;font-style:italic}
 
 /* STATS BAR (campaign) */
-.camp-header{background:rgba(0,0,0,.7);border-bottom:2px solid rgba(255,255,255,.08);padding:10px 90px 10px 20px;display:flex;align-items:center;gap:12px;flex-shrink:0;width:100%}
+.camp-header{background:rgba(0,0,0,.7);border-bottom:2px solid rgba(255,255,255,.08);padding:10px 20px;display:flex;align-items:center;gap:12px;flex-shrink:0;width:100%}
 .camp-logo{font-family:"Bebas Neue",cursive;font-size:18px;letter-spacing:3px;color:#ffd60a}
 .camp-cand-name{font-family:"Special Elite",cursive;font-size:12px;color:#888;letter-spacing:2px}
 .ev-cnt{font-family:"Special Elite",cursive;font-size:11px;color:#555;margin-left:auto;letter-spacing:1px}
@@ -172,8 +172,8 @@ body{font-family:"Libre Baskerville",serif;overflow:hidden;background:#000;color
 @keyframes dangerPulse{0%,100%{box-shadow:0 0 0 rgba(255,0,0,0)}50%{box-shadow:0 0 30px rgba(255,0,0,.4)}}
 
 /* Language toggle */
-#lang-btn{position:fixed;top:12px;right:14px;left:auto;z-index:99999;background:rgba(0,0,0,.75);border:1px solid rgba(255,255,255,.25);color:#ffd60a;font-family:"Special Elite",cursive;font-size:13px;letter-spacing:1px;padding:6px 13px;cursor:pointer;backdrop-filter:blur(6px);transition:all .2s;border-radius:3px}
-#lang-btn:hover{background:rgba(255,214,10,.15);border-color:#ffd60a}
+#lang-btn{position:fixed;top:50%;right:0;left:auto;transform:translateY(-50%);z-index:99999;background:rgba(0,0,0,.82);border:1px solid rgba(255,255,255,.22);border-right:none;color:#ffd60a;font-family:"Special Elite",cursive;font-size:12px;letter-spacing:2px;padding:14px 8px;cursor:pointer;backdrop-filter:blur(6px);transition:all .2s;border-radius:4px 0 0 4px;writing-mode:vertical-rl;text-orientation:mixed}
+#lang-btn:hover{background:rgba(255,214,10,.15);border-color:#ffd60a;padding-right:12px}
 </style>
 </head>
 <body>
@@ -235,7 +235,7 @@ body{font-family:"Libre Baskerville",serif;overflow:hidden;background:#000;color
 <div id="presidency" class="screen">
   <div class="np-header">
     <div class="np-name">🏛️ THE AMERICAN CHRONICLE</div>
-    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;padding-right:80px">
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
       <div class="np-date" id="presDate">JANUARY 20, 2025</div>
       <div class="pres-event-counter" id="presEvCnt" style="font-family:Special Elite,cursive;font-size:10px;color:#aaa;letter-spacing:2px">DAY 1 OF 1460</div>
     </div>
