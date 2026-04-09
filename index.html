@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>US President Simulator V2</title>
+<title>美国总统模拟器 V2 / US President Simulator V2</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Special+Elite&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -170,6 +170,10 @@ body{font-family:"Libre Baskerville",serif;overflow:hidden;background:#000;color
 /* Impeachment warning */
 .danger-glow{animation:dangerPulse 1.5s infinite}
 @keyframes dangerPulse{0%,100%{box-shadow:0 0 0 rgba(255,0,0,0)}50%{box-shadow:0 0 30px rgba(255,0,0,.4)}}
+
+/* Language toggle */
+#lang-btn{position:fixed;top:12px;right:14px;z-index:99999;background:rgba(0,0,0,.75);border:1px solid rgba(255,255,255,.25);color:#ffd60a;font-family:"Special Elite",cursive;font-size:13px;letter-spacing:1px;padding:6px 13px;cursor:pointer;backdrop-filter:blur(6px);transition:all .2s;border-radius:3px}
+#lang-btn:hover{background:rgba(255,214,10,.15);border-color:#ffd60a}
 </style>
 </head>
 <body>
@@ -249,7 +253,125 @@ body{font-family:"Libre Baskerville",serif;overflow:hidden;background:#000;color
 
 </div><!-- #game -->
 
+<!-- Language toggle button -->
+<button id="lang-btn" onclick="toggleLang()">中文</button>
+
 <script>
+// ============================================================
+// LANGUAGE / I18N
+// ============================================================
+let LANG = 'en'; // 'en' | 'zh'
+
+function toggleLang(){
+  LANG = LANG === 'en' ? 'zh' : 'en';
+  document.getElementById('lang-btn').textContent = LANG === 'en' ? '中文' : 'English';
+  // re-render current screen
+  redrawCurrentScreen();
+}
+
+function t(key){
+  if(LANG==='zh' && ZH[key] !== undefined) return ZH[key];
+  return key; // fallback to key as English text
+}
+
+// Central Chinese translations for UI strings
+const ZH = {
+  // Intro screen
+  'PRESIDENT<br>SIMULATOR': '美国总统<br>模拟器',
+  'VERSION II': '第二版',
+  'THE ROAD TO THE WHITE HOUSE': '走向白宫之路',
+  'PLAY NOW': '立即开始',
+  '60 SCENARIOS · 5 ENDINGS · ONE DESTINY': '60个事件 · 5种结局 · 一个命运',
+  // Char select
+  'CHOOSE YOUR CANDIDATE': '选择你的候选人',
+  'YOUR BELIEFS. YOUR DESTINY. YOUR AMERICA.': '你的信仰。你的命运。你的美国。',
+  // Campaign header
+  '⚡ CAMPAIGN 2024': '⚡ 2024年竞选',
+  'EVENT': '事件',
+  'OF 20': '/ 20',
+  // Stats
+  'APPROVAL': '支持率',
+  'FUNDS': '资金',
+  'ELEC. VOTES': '选举人票',
+  'ECONOMY': '经济',
+  'MILITARY': '军事',
+  'MEDIA': '媒体',
+  // Campaign event labels
+  'OF': '/',
+  'EVENT ': '事件 ',
+  ' OF 20': ' / 20',
+  ' OF 40': ' / 40',
+  'EXCLUSIVE REPORT': '独家报道',
+  'WASHINGTON, D.C. — AMERICAN CHRONICLE CORRESPONDENT': '华盛顿特区——美国编年史特派记者',
+  // Election night
+  '🗳️ ELECTION NIGHT': '🗳️ 选举之夜',
+  'LIVE RESULTS • NETWORK NEWS 2024': '实时结果 · 全国电视网 2024',
+  'DEMOCRATIC': '民主党',
+  'REPUBLICAN': '共和党',
+  'COUNTING VOTES...': '正在计票...',
+  '🏆 PROJECTED WINNER': '🏆 预计获胜者',
+  '📺 RACE CALLED': '📺 比赛结果揭晓',
+  'DEFEAT. NOT THIS TIME.': '失败。这次不行。',
+  // Presidency header
+  '🏛️ THE AMERICAN CHRONICLE': '🏛️ 美国编年史',
+  'DAY': '第',
+  'OF 1460': '天 / 1460',
+  // Notifications
+  'MOMENTUM GAINED': '势头正盛',
+  'DAMAGE TAKEN': '形势受损',
+  'DECISION PRAISED': '决策获赞',
+  'DECISION CRITICIZED': '决策受批',
+  'Steady.': '平稳。',
+  'No change.': '无变化。',
+  '⚠️ IMPEACHMENT RISK': '⚠️ 弹劾风险',
+  'Your approval is dangerously low. Congress is restless.': '您的支持率危险地低。国会蠢蠢欲动。',
+  '⚠️ ECONOMIC CRISIS': '⚠️ 经济危机',
+  'Markets are crashing. Economic collapse imminent.': '市场崩溃，经济即将瓦解。',
+  'ELECTION CALLED': '选举结果揭晓',
+  'You have won the presidency!': '您赢得了总统职位！',
+  'RACE CALLED': '比赛结果出炉',
+  'You have lost the election.': '您在此次选举中落败。',
+  'COPIED': '已复制',
+  'Result copied to clipboard!': '结果已复制到剪贴板！',
+  // Game over
+  '🔄 PLAY AGAIN': '🔄 再玩一次',
+  '📋 SHARE RESULT': '📋 分享结果',
+  'FINAL APPROVAL': '最终支持率',
+  'ELECT. VOTES': '选举人票',
+  'FUNDS LEFT': '剩余资金',
+  'LEGACY SCORE': '历史评分',
+  // Stat labels game over
+  'APPROVAL': '支持率',
+  'ECONOMY': '经济',
+  'MILITARY': '军事',
+  'MEDIA': '媒体',
+};
+
+// Bilingual candidates
+const CANDIDATES_ZH = [
+  {
+    name: '埃莉诺·哈特',
+    party: '民主党',
+    bio: '前国务卿。哈佛法学院。医疗改革和气候行动的倡导者。以敏锐的才智和铁一般的意志著称。',
+    traits: ['进步派', '外交家', '政策达人'],
+    bonus: '媒体+8，经济+5（初始加成）',
+  },
+  {
+    name: '杰克·斯特林',
+    party: '共和党',
+    bio: '功勋卓著的将军转型参议员。三星将领，两次出征。誓言恢复法律秩序和美国海外实力。',
+    traits: ['鹰派', '民粹主义者', '老兵'],
+    bonus: '军事+10，支持率+5（初始加成）',
+  },
+  {
+    name: '玛雅·里弗斯',
+    party: '独立候选人',
+    bio: '科技亿万富翁转型社会活动家。依靠透明度和制度改革建立了自己的运动。令两党都胆战心惊的变局者。',
+    traits: ['改革派', '局外人', '特立独行者'],
+    bonus: '资金+15，选举人票+30（初始加成）',
+  },
+];
+
 // ============================================================
 // STATE
 // ============================================================
@@ -540,6 +662,32 @@ const CAMPAIGN_EVENTS = [
   }
 ];
 
+
+// ============================================================
+// CAMPAIGN EVENTS - CHINESE TRANSLATIONS
+// ============================================================
+const CAMPAIGN_EVENTS_ZH = [
+  {tag:'辩论之夜',headline:'第一场总统辩论',body:'八千万美国人正在观看。对手甩出了一记致命的妙语。主持人转向你。演播室一片寂静。',flavor:'"这就是竞选成败的关键时刻。"——CNN主播',choices:['强势反击，发起毁灭性的反击。冒着显得咄咄逼人的风险。','保持冷静。以政策实质和从容自信作答。','转向核心主题，完全无视对方的攻击。']},
+  {tag:'媒体',headline:'爆炸性杂志深度报道',body:'一家知名杂志发布了一篇1.2万字的调查报道，深挖你过去的商业交易。报道在全国热传了48小时。',flavor:'"每位候选人都有秘密，问题在于有多少衣柜。"——政治分析人士',choices:['召开记者会，逐一回应每项指控。','将其定性为政治打压，动员基本盘。','悄悄和解，随后抛出一个重大公告，转移舆论焦点。']},
+  {tag:'丑闻',headline:'私人录音流出',body:'你在一场私人募款晚宴上直言不讳的录音遭到泄露。断章取义之下，听起来糟糕透顶。有线新闻循环播放。',flavor:'"在政治中，语境是一种你很少能拥有的奢侈品。"——竞选经理',choices:['立即发布完整未剪辑录音。','否认并攻击信源是政治操盘手。','道歉，坦承背景，展现脆弱的一面。']},
+  {tag:'超级星期二',headline:'十四州之夜',body:'超级星期二的结果正在实时播出。你在南方势头强劲，但在左右一切的郊区选民中正在失血。',flavor:'"超级星期二的胜负不是在星期二决定的——而是在此前数月奠定的。"——竞选老将',choices:['今晚飞赴三个摇摆州，举行午夜集会。','留守电视——在午夜前接受三家电视网采访。','让这一夜自然发展，专注于下一个州。']},
+  {tag:'筹款',headline:'竞选战备金危机',body:'你的竞选经理带来了一个重磅消息：竞选资金告急。最后两周的广告攻势岌岌可危，捐款人人心惶惶。',flavor:'"金钱是政治的氧气，没有它，信息就会窒息。"——竞选财务主管',choices:['与硅谷超级捐款人举行紧急晚宴。','在社交媒体发起每人5美元的草根众筹。','削减一周广告开支，节约资金。']},
+  {tag:'气候',headline:'野火季席卷竞选之路',body:'创纪录的野火席卷三个摇摆州，数千人撤离。气候政策立场一夜间成为头号议题。',flavor:'"当大自然介入，每位候选人都被迫偏离剧本。"——《华盛顿邮报》',choices:['宣布大胆的气候立法——《绿色地平线法案》。','亲赴灾区，展现亲力亲为的领导力。','呼吁两党合作推出灾难救援法案，置身事外。']},
+  {tag:'移民',headline:'"建墙"还是"欢迎回家"',body:'一支1.2万人的移民车队抵达南部边境，摄像机长枪短炮。两党都要求你在日落前表明立场。',flavor:'"移民是美国政治的第三轨——触碰它，你可能无法生还。"——政治学家',choices:['呼吁推进全面移民改革，提供入籍途径。','坚持边境安全优先，推动两党执法法案。','召开各边境州州长紧急峰会。']},
+  {tag:'经济',headline:'就业报告令华尔街震惊',body:'意外的就业报告显示制造业裁员40万人，市场下跌600点。你的经济资质突然遭到严密审视。',flavor:'"蠢货，问题在经济。"——竞选战略家',choices:['立即发布十点经济振兴计划。','指责现任政府，以变革为竞选主轴。','赴密歇根和宾夕法尼亚与工会领袖会面。']},
+  {tag:'党内纷争',headline:'党内爆发内战',body:'你党内一位资深成员公开称你的竞选是"一场慢动作灾难"。这场分裂正在成为头条新闻，让对手士气大振。',flavor:'"在政治中，内部的敌人始终是最危险的。"——党内元老',choices:['召开团结峰会，强迫公开和解。','公开反击，将其变成全党的忠诚度测试。','超然其外，任由媒体周期自行燃尽。']},
+  {tag:'青年选票',headline:'Z世代说："以上都不是"',body:'一项重大民调显示30岁以下选民称你"脱离现实"。两位合计拥有8000万粉丝的TikTok网红已经疯狂刷屏嘲讽你的竞选。',flavor:'"没有青年票，你赢不了。但仅靠青年票，你也赢不了。"——民调专家',choices:['不设剧本，做一小时TikTok直播，接受任何问题。','宣布每位借款人减免2万美元学生贷款。','邀请这些网红来竞选总部展开辩论。']},
+  {tag:'劳工',headline:'汽车工人工会威胁转而支持对手',body:'全美汽车工人联合会——密歇根、俄亥俄和宾夕法尼亚共40万名会员——本周末将召开会议。你在电动车补贴问题上的立场让他们愤慨。',flavor:'"在中西部，工会卡的分量远超超级政治行动委员会的支票。"——工会主席',choices:['走上纠察队，宣布500亿美元制造业投资。','与工会领导层私下会晤，谈判具体让步。','坚守电动车政策，赢在未来而非过去。']},
+  {tag:'社交媒体',headline:'你的推文引爆互联网',body:'一条深夜在懊恼中发出的推文已经彻底病毒式传播。6小时内4000万次曝光，所有评论员都在发声。',flavor:'"数字时代让每位候选人在凌晨两点都成为自己最大的敌人。"——媒体顾问',choices:['立即删推，发表真诚而详尽的道歉声明。','加倍强硬——"我的每一个字都算数。"让基本盘爱上它。','将其重新定义为"做真实的自己"，接受晨间采访阐释。']},
+  {tag:'直播',headline:'直播翻车事故',body:'在你竞选最重要的直播活动中，技术故障让你在全国电视直播中当众卡壳了令人窒息的45秒。',flavor:'"能力是理所当然的，直到它不再是的那一刻。"——竞选顾问',choices:['一笑而过，即兴发挥——在压力下展现人格魅力。','切断直播，修复后以一场精彩的政策宣示强势回归。','公开责怪技术团队，要求追究责任。']},
+  {tag:'副总统人选',headline:'副总统人选',body:'竞选中最关键的决定。三位通过审查的候选人：一位摇摆州州长、一位创造历史的少数族裔人士，以及一位拥有全国基本盘的昔日对手。',flavor:'"副总统的人选告诉选民你是谁、你珍视什么、你是否准备好执政。"——前总统',choices:['选择摇摆州州长。宾夕法尼亚的算盘是关键。','选择创造历史的人选——历史性、激励人心、举国欢腾。','选择昔日对手——整合党内，捐款网络庞大。']},
+  {tag:'最后冲刺',headline:'七天·七州·孤注一掷',body:'竞选最后一周。你的团队规划了七个必须拿下的州。你可以全程奔赴，但行程会让人精疲力竭。',flavor:'"竞选在最后72小时赢得——也在最后72小时失去。"——竞选经理',choices:['横扫七个州，拼到底，不留遗憾。','聚焦三个关键州，全力出击。','举办一场超级收官集会，向全国直播。']},
+  {tag:'深度伪造',headline:'选前72小时，深度伪造视频疯传',body:'一段极具迷惑性的AI生成视频，内容是你"承认"腐败行为，已被观看1亿次。来源无法追踪，选举官员惊慌失措。',flavor:'"AI时代的第一个牺牲品是信任本身。"——科技记者',choices:['召开紧急记者会，携技术专家现场辟谣。','提交联邦紧急投诉，定性为选举干预。','以正面内容大规模反攻，用广告淹没假视频。']},
+  {tag:'选举干预',headline:'外国干预警报',body:'美国情报部门确认，一个外国国家行为者正在针对你发动协调一致的影响力行动。总统已获简报，消息已公开。',flavor:'"在新冷战中，选举是战场。"——情报官员',choices:['要求总统将完整情报报告解密。','公开保持沉默，通过外交渠道运作。','将其变成竞选动员口号，激发爱国主义浪潮。']},
+  {tag:'基层动员',headline:'72小时地面战',body:'你的选战主任汇报，敲门拜票行动已覆盖230万户家庭，但在关键选区落后。距选举日还有72小时。',flavor:'"基层行动能赢得民调认为不可能的选举。"——选战主任',choices:['志愿者加倍轮班，激活你拥有的每一份联络名单。','将所有剩余资金投入对倾向红色选区的精准数字投放。','信任地面战，专注候选人最后的巡回演讲。']},
+  {tag:'选举前夕',headline:'选举前夕——最后几个小时',body:'选举日前夜的午夜，最后一份内部民调显示你在全国领先2个百分点以内。一切悬于投票率。你的团队打来最后一个电话。',flavor:'"选票已投，骰子已掷，现在我们等待。"——竞选经理',choices:['为未决选民录制一段个人视频，在午夜发布。','把最后几个小时留给家人，充好电，做回自己。','彻夜亲自致电每个未定立场的摇摆选区。']},
+  {tag:'告密者',headline:'竞选内部人士接受媒体专访',body:'一位竞选高级幕僚在重大辩论当天清晨接受了全面深度专访，指控团队内部混乱、资金挪用、候选人"不适合担任公职"，登上每家报纸头版。',flavor:'"每次竞选都有秘密，这次只是被公开了。"——政治记者',choices:['解雇，发布内部文件证明指控不实。','携竞选核心团队开记者会，展现团结。','采取和解姿态，邀请其回归，正面回应其关切。']},
+];
 
 const PRESIDENCY_EVENTS = [
   {
@@ -983,6 +1131,52 @@ const PRESIDENCY_EVENTS = [
     ]
   }
 ];
+
+// ============================================================
+// PRESIDENCY EVENTS - CHINESE TRANSLATIONS
+// ============================================================
+const PRESIDENCY_EVENTS_ZH = [
+  {tag:'就职典礼',headline:'1月20日——就职宣誓',body:'国会大厦在冬日阳光下熠熠生辉。两百万美国人排队伫立在国家广场。首席大法官手持《圣经》，国家屏息以待。',quote:'"不要问国家能为你做什么——写下属于你的篇章。"',choices:['发表团结人心、充满希望的演讲，弥合分裂。','直言不讳——让大胆的竞选承诺成为你开口的第一句话。','保持简短谦逊，行动胜于言辞。']},
+  {tag:'经济',headline:'衰退恐慌席卷华尔街',body:'市场三周内重挫18%，失业率飙升至7.2%。你就任以来的第一场重大经济危机比任何人预期的都来得更快。',quote:'"经济不在乎你的选举授权。"——联储主席',choices:['紧急刺激方案——2万亿美元，先花钱后担忧。','紧缩措施——削减开支，重建财政信心。','召开联邦储备委员会和财政部领导人紧急峰会。']},
+  {tag:'外交政策',headline:'朝鲜测试洲际弹道导弹',body:'突发：朝鲜成功测试了一枚理论上可打击芝加哥的洲际弹道导弹。联合国安理会正在紧急会议中。',quote:'"这不是演习。"——国家安全顾问',choices:['极限施压——新制裁，部署航母编队。','寻求直接外交谈判，开辟秘密渠道。','通过联合国运作——多边制裁方案。']},
+  {tag:'医疗',headline:'最高法院推翻标志性医疗法律',body:'5比4的裁决重创了《平价医疗法案》。2200万美国人面临在90天内失去医保。国会陷入僵局，所有目光都聚焦于你。',quote:'"历史将以我们在最脆弱的人处于危机时所做的事来评判我们。"——参院领袖',choices:['颁布行政紧急令，在国会采取行动期间维持医保覆盖。','提出两党替代方案——医疗改革峰会。','推动全民医保。以危机为执政授权。']},
+  {tag:'枪支管制',headline:'小学枪击事件',body:'一名持枪者在俄亥俄州一所小学打死19名儿童和2名教师。举国哀悼，国会陷入瘫痪，守夜烛光点亮每个州的州府。',quote:'"我们以前来过这里，这才是悲剧所在。"——哀伤辅导员',choices:['推动全面背景调查和红旗法律。','重点资助心理健康和校园安全。','召集全国任务组——两党合作，90天内立法。']},
+  {tag:'弹劾',headline:'众议院共和党人提交弹劾条款',body:'42名众议院成员以越权执政为由签署了弹劾条款。尽管基本上是象征性行为，但媒体报道铺天盖地。',quote:'"弹劾是宪法核武器。"——宪法学者',choices:['正面迎战——公开每一份相关文件，全面透明。','让法律团队处理，继续专注施政。','在黄金时段发表讲话，直接向美国人民说明情况。']},
+  {tag:'灾难',headline:'五级飓风横扫墨西哥湾沿岸',body:'二代"玛丽亚"飓风以五级强度登陆，整个社区夷为平地，800万人断电，联邦紧急事务管理局请求总统宣布紧急状态。',quote:'"领导力的衡量标准是你在最初24小时内的所作所为。"——联邦应急署署长',choices:['直飞灾区，亲临一线领导恢复工作。','立即部署国民警卫队并拨款500亿美元紧急救灾。','与各州长协调——尊重地方权力，提供联邦支援。']},
+  {tag:'疫情',headline:'疾控中心宣布新型呼吸道大流行',body:'一种住院率高达40%的新型病原体正在12个国家蔓延，疾控中心预测美国病例每7天翻倍。艰难抉择在即。',quote:'"疫情不谈判，公共卫生也不应该。"——疾控中心主任',choices:['宣布国家紧急状态，强制要求戴口罩，部署军队医疗团队。','自愿指南，相信科学，让各州决定。','极速计划2.0——90天内紧急疫苗项目，投入200亿美元。']},
+  {tag:'媒体',headline:'白宫记者团发起抗议',body:'你的新闻秘书在一场引发全球关注的灾难性简报会后辞职，记者团与你的政府公开开战，每日泄密不断加速。',quote:'"媒体不是敌人——但疏远他们会让他们成为敌人。"——媒体顾问',choices:['每周亲自举行两次简报会，以信息透明赢回他们。','任命一位经验丰富的媒体界人士担任新闻秘书。','绕过媒体——直接使用社交媒体和播客。']},
+  {tag:'外交政策',headline:'俄乌危机升级',body:'俄罗斯在乌克兰边境集结了20万大军，并发出48小时最后通牒。北约盟国每隔20分钟就给白宫打一次电话。',quote:'"在基辅发生的事将在地球上每一个首都引发回响。"——国务卿',choices:['增兵北约，划定明确红线。','紧急外交峰会——莫斯科、基辅、布鲁塞尔。','宣布大规模对乌军援方案，以实力威慑。']},
+  {tag:'经济',headline:'通胀飙升至9.4%——40年最高',body:'油价、食品、房租——万物皆涨。你的经济管理支持率降至31%，中期选举还有六个月。',quote:'"选民不读GDP报告，他们在收银台感受通胀。"——财政部长',choices:['对生活必需品实施紧急价格管制，安抚基本盘。','配合美联储大幅加息，短痛换长赢。','释放战略石油储备，立即降低能源成本。']},
+  {tag:'气候',headline:'巴黎协定——美国的气候清算',body:'新版《巴黎框架》要求2030年前减排65%，你的能源部长说技术上可行，你的经济团队称其为杀手。',quote:'"每一吨碳都是我们留给孩子的债务。"——气候特使',choices:['签署强化版《巴黎框架》，全面承诺。','谈判修订版框架，平衡气候与就业。','以国内《绿色新政》替代，气候上美国优先。']},
+  {tag:'丑闻',headline:'内阁成员因腐败被捕',body:'你的商务部长因联邦腐败指控被捕。调查已持续18个月，你的政府毫不知情——或者说真的不知道？',quote:'"烂鱼从头开始臭——至少他们会这么说。"——反对党领袖',choices:['立即解雇，发表零容忍声明，设立独立检察官。','等待司法程序，坚持无罪推定。','主动公开所有通讯记录，证明你毫不知情。']},
+  {tag:'教育',headline:'全国考试成绩创历史性新低',body:'数学和阅读成绩跌至50年最低点，四分之三的四年级学生阅读不达标，堪称全国性危机。',quote:'"教育不是问题的答案，教育是回答所有问题的手段。"——教育部长',choices:['紧急《国家教育投资法案》，五年投入3000亿美元。','全国阅读课程强制令，联邦标准。','扩大学校选择权，竞争提升所有人的水准。']},
+  {tag:'军事',headline:'五角大楼要求在台湾海峡部署军队',body:'中国军舰越过台海中线，台湾进入全面军事戒备，五角大楼要求立即授权海军部署。',quote:'"威慑只有在对方相信你会采取行动时才有效。"——参谋长联席会议主席',choices:['授权全面海军部署，台湾海峡航行自由行动。','启动北京外交热线，开展幕后谈判。','宣布强化《台湾关系法》，进一步武装台湾。']},
+  {tag:'社会正义',headline:'全国抗议因警察枪杀事件爆发',body:'一段手无寸铁的黑人男子遭警察杀害的影像引发了200座城市的抗议，你在最初24小时内的回应将定义你的民权遗产。',quote:'"迟来的正义是被拒绝的正义。"——民权领袖',choices:['随抗议者一同游行，亲身表达声援。','宣布全面警察改革法案，禁止锁喉等暴力执法。','呼吁冷静，以法律秩序为先，委托独立调查。']},
+  {tag:'太空',headline:'中国登月——美国在旁观看',body:'中国航天员已在月球南极插上国旗，正是NASA阿尔忒弥斯计划的目标地点，国会的电话被打爆。',quote:'"我们选择登月，不是因为它容易，而是因为它必要。"——NASA局长',choices:['NASA预算翻倍，宣布2028年阿尔忒弥斯月球基地。','与私营部门合作——SpaceX、蓝色起源紧急合同。','提议美中联合月球合作，以科学促外交。']},
+  {tag:'经济',headline:'债务上限危机——48小时内将违约',body:'国会未能提高债务上限。48小时后，美国将历史上首次债务违约，市场正在崩溃。',quote:'"违约不是一个选项，它是一场灾难。"——财政部长',choices:['援引宪法第14修正案，以行政权力提高上限，向国会摊牌。','将国会领袖关在白宫，直到达成协议。','黄金时段发表讲话，对阻挠成员施加公众压力。']},
+  {tag:'移民',headline:'DACA受益者面临大规模驱逐令',body:'联邦法院推翻DACA项目，70万名"梦想者"面临在60天内被驱逐出境，最高法院和白宫门外爆发了抗议。',quote:'"这些孩子除了一纸文件，哪哪都是美国人。"——DACA倡导者',choices:['颁布行政紧急令，暂停所有DACA驱逐行动。','推动紧急《梦想者法案》在国会立法通过。','对所有DACA受益者逐一赦免——前所未有但合法。']},
+  {tag:'科技',headline:'AI使4000万份工作岌岌可危',body:'麦肯锡的标志性报告称AI将在8年内自动化40%的现有工作，硅谷积极游说反对监管，劳工工会正在反叛。',quote:'"机器人来了，问题是：它们为谁工作？"——劳工部长',choices:['全面AI监管和全民基本收入试点。','AI岗位转型基金，为1000万名工人再培训。','让市场自我调适，让政府远离创新。']},
+  {tag:'中期选举',headline:'中期选举结果——民意裁决出炉',body:'435个众议院席位和34个参议院席位的结果陆续出炉，你的党的命运，以及你剩余的议程，将在今晚揭晓。',quote:'"所有选举都是地方选举，直到开票结果出来，它们又都成了全国选举。"——政治学家',choices:['宣称获得授权，推进雄心勃勃的下半任期议程，大干一场。','转向妥协，宣布两党合作小组。','善用否决权，阻止最糟糕的法案，守护你的遗产。']},
+  {tag:'退伍军人',headline:'退伍军人事务部丑闻：30万老兵被拒绝就医',body:'监察长报告揭示30万名老兵被列入秘密等待名单，数十人可能因等待就医而去世，报道登上每家报纸头版。',quote:'"一个不尊重自己士兵的国家，没有资格召唤新的士兵。"——老兵倡导者',choices:['立即解雇退伍军人事务部部长，宣布国家紧急状态。','向退伍军人医疗体系紧急注入1000亿美元。','与私立医院合作，立即提供溢出治疗能力。']},
+  {tag:'能源',headline:'全国电网遭网络攻击，东海岸大停电',body:'一场精心策划的网络攻击导致东海岸4000万美国人断电，国家安全局表示这是国家支持的行为，医院靠发电机维持。',quote:'"这是基础设施领域的珍珠港。"——网络安全总监',choices:['宣布国家紧急状态，授权军事网络反制行动。','立即推动500亿美元电网加固立法，90天紧急项目。','召集北约盟国——这威胁到我们所有人，多边回应。']},
+  {tag:'最高法院',headline:'最高法院空缺：你的历史性提名',body:'一名最高法院大法官84岁高龄退休，给你留下了一项具有历史意义的任命。三位候选人拥有截然不同的司法理念。',quote:'"总统最持久的遗产往往是他们任命的法官。"——宪法史学家',choices:['任命年轻的进步派旗手——巩固你的历史遗产。','任命温和派共识建构者——赢得两党赞誉。','任命创造历史的人选——打破壁垒，激励数百万人。']},
+  {tag:'贸易',headline:'中美贸易战升级——关税达45%',body:'中国以45%的关税反制你对美国农产品的关税，爱荷华、内布拉斯加、堪萨斯的农民怒不可遏，大豆市场正在崩溃。',quote:'"贸易战是好的，容易赢——直到它们不再是的时候。"——经济史',choices:['继续升级——中国必须先眨眼。','谈判紧急贸易框架，在收获季前降级。','向受影响农民提供补贴，在政治上承担代价。']},
+  {tag:'心理健康',headline:'青少年心理健康危机：自杀率上升40%',body:'卫生总监发布紧急通告：五年内青少年自杀和严重抑郁上升40%，社交媒体平台被指为元凶。',quote:'"这一代人正溺于连接，却死于孤独。"——卫生总监',choices:['监管社交媒体平台，年龄验证、算法透明。','《国家心理健康基础设施法案》，五年投入200亿美元，每所学校配备辅导员。','两党心理健康委员会，跨党派解决方案。']},
+  {tag:'水门2.0',headline:'告密者泄露椭圆形办公室录音',body:'一名白宫工作人员将7小时的椭圆形办公室录音泄露给《华盛顿邮报》，内容被描述为"可能达到弹劾门槛"，你的团队陷入恐慌。',quote:'"掩盖总是比罪行本身更糟糕。"——水门事件教训',choices:['主动发布所有录音，抢在报道前面。','援引行政特权，拒绝公开，在法庭上抗争。','发表黄金时段讲话，解释完整来龙去脉。']},
+  {tag:'非洲政策',headline:'饥荒危机：1800万人面临饥饿',body:'非洲之角发生灾难性旱灾，1800万人面临饥荒，联合国承载能力已达极限，全球援助机构恳求美国发挥领导作用。',quote:'"粮仓空虚时，任何政治争论都毫无意义。"——联合国秘书长',choices:['宣布美国历史上最大规模粮食援助计划，80亿美元。','部署军事后勤力量支援援助物资配送，协调七国集团。','召集二十国集团紧急人道主义峰会，多边解决方案。']},
+  {tag:'住房',headline:'住房危机：中位房价触及75万美元',body:'美国中位房价达到75万美元，62%的千禧一代在民调中表示已放弃置业梦想，主要城市无家可归者同比增长35%。',quote:'"美国的住房梦正在变成幻觉。"——住房经济学家',choices:['住房新政：新建200万套经济适用房。','行政令推动分区改革，强制城市向上发展。','首次购房者2.5万美元税收抵免。']},
+  {tag:'核武器',headline:'伊朗宣布具备核武器突破能力',body:'伊朗官员宣布已实现武器级铀浓缩。以色列将其定义为生存威胁，并要求你在72小时内采取行动。',quote:'"最难的事情是在事件当下做出历史将在事后评判的决定。"——国家安全顾问',choices:['对伊朗实施毁灭性经济制裁，与欧盟和联合国协调。','直接与德黑兰展开核外交，不设前提条件。','授权秘密行动推迟核计划，不发表公开声明。']},
+  {tag:'审查制度',headline:'国会推动审查社交媒体',body:'两党均支持一项赋予政府权力删除平台"有害"内容的法案，公民自由团体称其违宪。',quote:'"能够保护你免受言论侵害的政府，也能用言论来保护自己。"——第一修正案学者',choices:['否决，第一修正案不容妥协。','签署，国家安全和儿童安全优先。','提出范围有限、措辞精准的替代方案，走平衡之路。']},
+  {tag:'连任',headline:'每位总统都必须回答的问题',body:'你的核心圈子在情报室会面——不是为了危机，而是为了一个问题：你会竞选连任吗？党需要知道，国家在注视着。',quote:'"历史遗产在第二任期建立——如果你赢得了它。"——幕僚长',choices:['宣布连任竞选，用政绩押注。','宣布只任一届，以国家利益优先于权力。','表示稍后再做决定，吊足所有人的胃口。']},
+  {tag:'历史遗产',headline:'《时代》杂志："你的总统任期意味着什么？"',body:'《时代》杂志要求派记者驻扎白宫一周，记录"实时进行中的总统任期"。这是一个非凡的信息透明机会——也是非凡的风险。',quote:'"历史由那些现身者书写。"——《时代》杂志总编',choices:['给予完全采访权，透明度是你的遗产。','给予有限采访权，掌控叙事。','拒绝，总统任期不是真人秀。']},
+  {tag:'告别之际',headline:'你在任的最后几天',body:'政权交接团队已经入驻，椭圆形办公室的艺术品正在编目清册。你作为总统的最后一个举动可能定义一切——或者毁掉一切。',quote:'"最后的印象与第一个印象一样持久。"——前总统日记',choices:['为非暴力犯罪者颁发大规模赦免和减刑令。','发布标志性的气候问题总统令作为最后遗言。','给每一位美国人写一封公开信，在各地发布。']},
+  {tag:'党派政治',headline:'你的党内反对你的标志性法案',body:'你们党内十名参议员威胁要扼杀你最重要的立法，他们要让步，要权力，要被倾听。',quote:'"在华盛顿，几乎任何事情都能办成——只要你不在乎谁来领功。"——林登·约翰逊',choices:['邀请他们前往戴维营，秘密谈判。','绕过他们，公开动员他们的选民。','作出重大让步，半块面包胜过没有面包。']},
+  {tag:'恐怖主义',headline:'FBI挫败国内恐怖袭击阴谋',body:'FBI破获一起针对三个主要机场的爆炸阴谋，逮捕47名嫌疑人，其中三人为政府雇员，举国震惊，要求给出答案。',quote:'"恐怖主义以恐惧为食，总统的工作是剥夺它这种养分。"——国土安全部长',choices:['发表冷静而坚定的全国讲话，美国坚不可摧。','宣布全面的新国内反恐改革方案。','向执法英雄致敬，保持克制，拒绝制造恐慌。']},
+  {tag:'盟友关系',headline:'北约峰会：盟国要求美国加大承诺',body:'在布鲁塞尔举行的北约峰会上，27个盟国要求美国提高国防开支承诺，美国作为联盟核心的公信力岌岌可危。',quote:'"领导力的代价是可靠性。"——北约秘书长',choices:['宣布加大美国承诺，率先引领。','推动责任分担，盟国必须先增加开支。','提出21世纪新北约愿景，以理念引领。']},
+  {tag:'历史评价',headline:'历史学家评价你的总统任期——初步裁决',body:'C-SPAN发布总统排名。早期历史学家正在书写你遗产的初稿，一位著名历史学家称你为"自罗斯福以来最具影响力的总统"。',quote:'"每位总统都是一个由历史检验的假设。"——总统史学家',choices:['发表首次总统图书馆重要演讲，亲自诠释你的遗产。','默默继续施政，让政绩自己说话。','挑战这一叙事，重新定义你总统任期的故事。']},
+  {tag:'毒品危机',headline:'芬太尼过量死亡年破10万',body:'连续第三年，过量死亡人数超过10万，农村和城市社区均遭重创，DEA、卫生与公众服务部和你的禁毒沙皇都在要求统一的全国战略。',quote:'"这不是道德失败——这是公共卫生灾难。"——卫生总监',choices:['宣布全国毒品紧急状态，大规模扩展治疗能力。','锁定供应链——对芬太尼贩运路线展开DEA闪电行动。','联邦去罪化，在全国建立减少伤害中心。']},
+  {tag:'基础设施',headline:'桥梁、道路、铁路：美国在崩塌',body:'美国土木工程师学会在四年一度的报告中给美国基础设施打了D+，东北部三座主要桥梁连夜关闭接受紧急检查。',quote:'"一个国家的基础设施是它的骨架，美国的骨架正在显出老态。"——ASCE主席',choices:['通过3.5万亿美元的《美国重建法案》，艾森豪威尔以来最雄心勃勃的举措。','目标明确的8000亿美元方案，聚焦最关键的失修问题。','公私合营模式，撬动私人资本。']},
+];
 </script>
 
 <script>
@@ -1036,6 +1230,17 @@ function initIntro(){
   }
 }
 
+function renderIntroText(){
+  const isZh=LANG==='zh';
+  document.querySelector('.intro-title').innerHTML=
+    isZh?'美国总统<br>模拟器':'PRESIDENT<br>SIMULATOR';
+  document.querySelector('.intro-v2').textContent=isZh?'第二版':'VERSION II';
+  document.querySelector('.intro-sub').textContent=isZh?'走向白宫之路':'THE ROAD TO THE WHITE HOUSE';
+  document.querySelector('.btn-play').textContent=isZh?'立即开始':'PLAY NOW';
+  document.querySelector('.intro-credits').textContent=
+    isZh?'60个事件 · 5种结局 · 一个命运':'60 SCENARIOS · 5 ENDINGS · ONE DESTINY';
+}
+
 // ============================================================
 // GAME START / CHARACTER SELECT
 // ============================================================
@@ -1045,20 +1250,31 @@ function startGame(){
 }
 
 function initCharSelect(){
+  const isZh=LANG==='zh';
+  document.querySelector('.sel-title').textContent=
+    isZh?'选择你的候选人':'CHOOSE YOUR CANDIDATE';
+  document.querySelector('.sel-sub').textContent=
+    isZh?'你的信仰。你的命运。你的美国。':'YOUR BELIEFS. YOUR DESTINY. YOUR AMERICA.';
   const grid=document.getElementById('candGrid');
   grid.innerHTML='';
-  CANDIDATES.forEach(c=>{
+  CANDIDATES.forEach((c,idx)=>{
+    const zh=CANDIDATES_ZH[idx];
     const card=document.createElement('div');
     card.className=`cand-card ${c.css}`;
+    const name=isZh?zh.name:c.name;
+    const party=isZh?zh.party:c.party;
+    const bio=isZh?zh.bio:c.bio;
+    const traits=isZh?zh.traits:c.traits;
+    const bonus=isZh?zh.bonus:c.bonus;
     card.innerHTML=`
       <span class="cand-emo">${c.emoji}</span>
-      <div class="cand-name">${c.name}</div>
-      <div class="cand-party">${c.party}</div>
-      <div class="cand-bio">${c.bio}</div>
+      <div class="cand-name">${name}</div>
+      <div class="cand-party">${party}</div>
+      <div class="cand-bio">${bio}</div>
       <div class="cand-tags">
-        ${c.traits.map(t=>`<span class="tag">${t}</span>`).join('')}
+        ${traits.map(tr=>`<span class="tag">${tr}</span>`).join('')}
       </div>
-      <div class="cand-bonus">★ ${c.bonus}</div>
+      <div class="cand-bonus">★ ${bonus}</div>
     `;
     card.onclick=()=>selectCandidate(c);
     grid.appendChild(card);
@@ -1087,29 +1303,44 @@ function selectCandidate(c){
 // CAMPAIGN
 // ============================================================
 function initCampaign(){
+  const isZh=LANG==='zh';
+  const idx=CANDIDATES.indexOf(G.candidate);
+  const name=isZh&&idx>=0?CANDIDATES_ZH[idx].name:G.candidate.name;
+  const party=isZh&&idx>=0?CANDIDATES_ZH[idx].party:G.candidate.party;
   document.getElementById('campCandName').textContent=
-    `${G.candidate.emoji} ${G.candidate.name}  ·  ${G.candidate.party}`;
+    `${G.candidate.emoji} ${name}  ·  ${party}`;
+  document.querySelector('.camp-logo').textContent=
+    isZh?'⚡ 2024年竞选':'⚡ CAMPAIGN 2024';
   renderCampStats();
   renderCampEvent();
 }
 
 function renderCampStats(){
+  const isZh=LANG==='zh';
   const apPct=G.approval;
   const fuPct=G.funds;
   const evPct=Math.min(100,(G.electorate/538)*100);
   document.getElementById('campStats').innerHTML=`
-    <div class="stat-it sa"><span class="slabel">APPROVAL</span>
+    <div class="stat-it sa"><span class="slabel">${isZh?'支持率':'APPROVAL'}</span>
       <div class="sbar-o"><div class="sbar-i sa" style="width:${apPct}%"></div></div>
       <span class="sval">${G.approval}%</span></div>
-    <div class="stat-it sf"><span class="slabel">FUNDS</span>
+    <div class="stat-it sf"><span class="slabel">${isZh?'资金':'FUNDS'}</span>
       <div class="sbar-o"><div class="sbar-i sf" style="width:${fuPct}%"></div></div>
       <span class="sval">${G.funds}</span></div>
-    <div class="stat-it se"><span class="slabel">ELEC. VOTES</span>
+    <div class="stat-it se"><span class="slabel">${isZh?'选举人票':'ELEC. VOTES'}</span>
       <div class="sbar-o"><div class="sbar-i se" style="width:${evPct}%"></div></div>
       <span class="sval">${G.electorate}</span></div>
   `;
   document.getElementById('campEvCnt').textContent=
-    `EVENT ${G.campEventIdx} / 20`;
+    isZh?`第 ${G.campEventIdx} 个事件 / 20`:`EVENT ${G.campEventIdx} / 20`;
+  // Also refresh header candidate name
+  const idx=CANDIDATES.indexOf(G.candidate);
+  const name=isZh&&idx>=0?CANDIDATES_ZH[idx].name:G.candidate.name;
+  const party=isZh&&idx>=0?CANDIDATES_ZH[idx].party:G.candidate.party;
+  document.getElementById('campCandName').textContent=
+    `${G.candidate.emoji} ${name}  ·  ${party}`;
+  document.querySelector('.camp-logo').textContent=
+    isZh?'⚡ 2024年竞选':'⚡ CAMPAIGN 2024';
 }
 
 function renderCampEvent(){
@@ -1117,20 +1348,28 @@ function renderCampEvent(){
     startElectionNight();
     return;
   }
+  const isZh=LANG==='zh';
   const ev=CAMPAIGN_EVENTS[G.campEventIdx];
+  const evZh=CAMPAIGN_EVENTS_ZH[G.campEventIdx]||null;
+  const tag=isZh&&evZh?evZh.tag:ev.tag;
+  const headline=isZh&&evZh?evZh.headline:ev.headline;
+  const body=isZh&&evZh?evZh.body:ev.body;
+  const flavor=isZh&&evZh?evZh.flavor:ev.flavor;
+  const eventLabel=isZh?`${tag} · 第 ${G.campEventIdx+1} 个事件 / 20`:`${tag} · EVENT ${G.campEventIdx+1} OF 20`;
   const card=document.getElementById('eventCard');
   card.innerHTML=`
-    <div class="ev-tag">${ev.tag} &nbsp;·&nbsp; EVENT ${G.campEventIdx+1} OF 20</div>
-    <div class="ev-hl">${ev.headline}</div>
-    <div class="ev-body">${ev.body}</div>
-    <div class="ev-flavor">${ev.flavor}</div>
+    <div class="ev-tag">${eventLabel}</div>
+    <div class="ev-hl">${headline}</div>
+    <div class="ev-body">${body}</div>
+    <div class="ev-flavor">${flavor}</div>
     <div class="choices">
-      ${ev.choices.map((ch,i)=>`
-        <button class="ch-btn" onclick="chooseCamp(${i})">
-          <span>${String.fromCharCode(65+i)}. ${ch.text}</span>
-          <div class="ch-eff">→ ${ch.effect}</div>
-        </button>
-      `).join('')}
+      ${ev.choices.map((ch,i)=>{
+        const chText=isZh&&evZh&&evZh.choices[i]?evZh.choices[i]:ch.text;
+        return `<button class="ch-btn" onclick="chooseCamp(${i})">
+          <span>${String.fromCharCode(65+i)}. ${chText}</span>
+          <div class="ch-eff">→ ${isZh?'':ch.effect}</div>
+        </button>`;
+      }).join('')}
     </div>
   `;
   // Animate card
@@ -1154,17 +1393,21 @@ function chooseCamp(idx){
   G.electorate=clamp(G.electorate,0,538);
   
   // Show notification
+  const isZh=LANG==='zh';
   const dA=G.approval-before.approval;
   const dF=G.funds-before.funds;
   const dE=G.electorate-before.electorate;
   let parts=[];
-  if(dA>0)parts.push(`Approval +${dA}`); else if(dA<0)parts.push(`Approval ${dA}`);
-  if(dF>0)parts.push(`Funds +${dF}`); else if(dF<0)parts.push(`Funds ${dF}`);
-  if(dE>0)parts.push(`Electoral +${dE}`); else if(dE<0)parts.push(`Electoral ${dE}`);
+  const lApproval=isZh?'支持率':'Approval';
+  const lFunds=isZh?'资金':'Funds';
+  const lElec=isZh?'选举人票':'Electoral';
+  if(dA>0)parts.push(`${lApproval} +${dA}`); else if(dA<0)parts.push(`${lApproval} ${dA}`);
+  if(dF>0)parts.push(`${lFunds} +${dF}`); else if(dF<0)parts.push(`${lFunds} ${dF}`);
+  if(dE>0)parts.push(`${lElec} +${dE}`); else if(dE<0)parts.push(`${lElec} ${dE}`);
   const positive=dA+dF+dE>0;
   showNotif(
-    positive?'MOMENTUM GAINED':'DAMAGE TAKEN',
-    parts.join(' · ')||'Steady.',
+    positive?(isZh?'势头正盛':'MOMENTUM GAINED'):(isZh?'形势受损':'DAMAGE TAKEN'),
+    parts.join(' · ')||(isZh?'平稳。':'Steady.'),
     positive?'pos':'neg'
   );
   
@@ -1179,7 +1422,24 @@ function chooseCamp(idx){
 function startElectionNight(){
   showScreen('election-night');
   
-  const tickerMsgs=[
+  const isZhEN=LANG==='zh';
+  // Update election night static text
+  document.querySelector('.en-logo').textContent=isZhEN?'🗳️ 选举之夜':'🗳️ ELECTION NIGHT';
+  document.querySelector('.en-net').textContent=isZhEN?'实时结果 · 全国电视网 2024':'LIVE RESULTS • NETWORK NEWS 2024';
+  document.querySelector('.evn-dem .evn-lbl').textContent=isZhEN?'民主党':'DEMOCRATIC';
+  document.querySelector('.evn-rep .evn-lbl').textContent=isZhEN?'共和党':'REPUBLICAN';
+  const tickerMsgs=isZhEN?[
+    '选举之夜特别直播',
+    '全国各地投票站关闭',
+    '关键摇摆州结果陆续揭晓',
+    `${G.candidate.name} 为每一张选票而战`,
+    '数百万美国人正在收看',
+    '历史性的高投票率被报道',
+    '早期结果可能不反映最终结果',
+    '请继续关注实时更新',
+    '邮寄选票仍在统计中',
+    '突发：关键战场州结果过于接近无法预测',
+  ]:[
     'ELECTION NIGHT SPECIAL COVERAGE',
     'POLLS CLOSE ACROSS THE NATION',
     'RESULTS POURING IN FROM KEY SWING STATES',
@@ -1245,17 +1505,20 @@ function startElectionNight(){
       document.getElementById('evnRep').textContent=
         isPlayerRep?playerEV:oppEV;
       
+      const isZhR=LANG==='zh';
       if(playerWins){
-        document.getElementById('enStatus').textContent='🏆 PROJECTED WINNER';
+        document.getElementById('enStatus').textContent=isZhR?'🏆 预计获胜者':'🏆 PROJECTED WINNER';
+        const idx2=CANDIDATES.indexOf(G.candidate);
+        const wName=isZhR&&idx2>=0?CANDIDATES_ZH[idx2].name:G.candidate.name;
         document.getElementById('enWinner').textContent=
-          `${G.candidate.name.toUpperCase()} WINS!`;
+          isZhR?`${wName} 获胜！`:`${G.candidate.name.toUpperCase()} WINS!`;
         document.getElementById('enWinner').style.color='#ffd60a';
-        showNotif('ELECTION CALLED','You have won the presidency!','pos');
+        showNotif(isZhR?'选举结果揭晓':'ELECTION CALLED',isZhR?'您赢得了总统职位！':'You have won the presidency!','pos');
       } else {
-        document.getElementById('enStatus').textContent='📺 RACE CALLED';
-        document.getElementById('enWinner').textContent='DEFEAT. NOT THIS TIME.';
+        document.getElementById('enStatus').textContent=isZhR?'📺 比赛结果揭晓':'📺 RACE CALLED';
+        document.getElementById('enWinner').textContent=isZhR?'失败，这次不行。':'DEFEAT. NOT THIS TIME.';
         document.getElementById('enWinner').style.color='#ff6b6b';
-        showNotif('RACE CALLED','You have lost the election.','neg');
+        showNotif(isZhR?'比赛结果出炉':'RACE CALLED',isZhR?'您在此次选举中落败。':'You have lost the election.','neg');
       }
       
       setTimeout(()=>{
@@ -1284,32 +1547,39 @@ function startPresidency(){
 }
 
 function renderPresStats(){
+  const isZh=LANG==='zh';
   const d=document.getElementById('presStats');
   d.innerHTML=`
-    <div class="ps-it ps-appr"><span class="ps-lbl">APPROVAL</span>
+    <div class="ps-it ps-appr"><span class="ps-lbl">${isZh?'支持率':'APPROVAL'}</span>
       <div class="ps-bar-o"><div class="ps-bar-i" style="width:${G.pApproval}%"></div></div>
       <span class="ps-val">${Math.round(G.pApproval)}%</span></div>
-    <div class="ps-it ps-econ"><span class="ps-lbl">ECONOMY</span>
+    <div class="ps-it ps-econ"><span class="ps-lbl">${isZh?'经济':'ECONOMY'}</span>
       <div class="ps-bar-o"><div class="ps-bar-i" style="width:${G.pEconomy}%"></div></div>
       <span class="ps-val">${Math.round(G.pEconomy)}</span></div>
-    <div class="ps-it ps-mil"><span class="ps-lbl">MILITARY</span>
+    <div class="ps-it ps-mil"><span class="ps-lbl">${isZh?'军事':'MILITARY'}</span>
       <div class="ps-bar-o"><div class="ps-bar-i" style="width:${G.pMilitary}%"></div></div>
       <span class="ps-val">${Math.round(G.pMilitary)}</span></div>
-    <div class="ps-it ps-med"><span class="ps-lbl">MEDIA</span>
+    <div class="ps-it ps-med"><span class="ps-lbl">${isZh?'媒体':'MEDIA'}</span>
       <div class="ps-bar-o"><div class="ps-bar-i" style="width:${G.pMedia}%"></div></div>
       <span class="ps-val">${Math.round(G.pMedia)}</span></div>
   `;
   // Date counter
-  const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const monthsEn=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const monthsZh=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  const months=isZh?monthsZh:monthsEn;
   const dayOfYear=((G.presEventIdx)/40)*365;
   const yearOffset=Math.floor(dayOfYear/365);
   const doy=dayOfYear%365;
   const month=months[Math.floor((doy/365)*12)];
   const day=rand(1,28);
   document.getElementById('presDate').textContent=
-    `${month} ${day}, ${2025+yearOffset}`;
+    isZh?`${2025+yearOffset}年${month}${day}日`:`${month} ${day}, ${2025+yearOffset}`;
   document.getElementById('presEvCnt').textContent=
-    `EVENT ${G.presEventIdx} OF 40  ·  DAY ${Math.floor(dayOfYear+1)} OF 1460`;
+    isZh?`第 ${G.presEventIdx} 个事件 / 40  ·  第 ${Math.floor(dayOfYear+1)} 天 / 1460`
+        :`EVENT ${G.presEventIdx} OF 40  ·  DAY ${Math.floor(dayOfYear+1)} OF 1460`;
+  // Presidency header
+  document.querySelector('.pres-logo').textContent=
+    isZh?'🏛️ 美国编年史':'🏛️ THE AMERICAN CHRONICLE';
 }
 
 function renderPresEvent(){
@@ -1326,23 +1596,30 @@ function renderPresEvent(){
   if(G.pApproval<20){triggerEnding('impeach');return;}
   if(G.pEconomy<10){triggerEnding('econ');return;}
   
+  const isZh=LANG==='zh';
   const ev=PRESIDENCY_EVENTS[G.presEventIdx];
+  const evZh=PRESIDENCY_EVENTS_ZH[G.presEventIdx]||null;
+  const tag=isZh&&evZh?evZh.tag:ev.tag;
+  const headline=isZh&&evZh?evZh.headline:ev.headline;
+  const body=isZh&&evZh?evZh.body:ev.body;
+  const quote=isZh&&evZh?evZh.quote:ev.quote;
   const card=document.getElementById('presCard');
   card.innerHTML=`
     <div class="np-banner">
-      <span>${ev.tag}</span>
-      <span>EXCLUSIVE REPORT</span>
+      <span>${tag}</span>
+      <span>${isZh?'独家报道':'EXCLUSIVE REPORT'}</span>
     </div>
-    <div class="np-hl">${ev.headline}</div>
-    <div class="np-dateline">WASHINGTON, D.C. — AMERICAN CHRONICLE CORRESPONDENT</div>
-    <div class="np-body-text">${ev.body}</div>
-    ${ev.quote?`<div class="np-quote">${ev.quote}</div>`:''}
+    <div class="np-hl">${headline}</div>
+    <div class="np-dateline">${isZh?'华盛顿特区——美国编年史特派记者':'WASHINGTON, D.C. — AMERICAN CHRONICLE CORRESPONDENT'}</div>
+    <div class="np-body-text">${body}</div>
+    ${quote?`<div class="np-quote">${quote}</div>`:''}
     <div class="np-choices">
-      ${ev.choices.map((ch,i)=>`
-        <button class="np-ch" onclick="choosePres(${i})">
-          <div>${String.fromCharCode(9312+i)} ${ch.text}</div>
-        </button>
-      `).join('')}
+      ${ev.choices.map((ch,i)=>{
+        const chText=isZh&&evZh&&evZh.choices[i]?evZh.choices[i]:ch.text;
+        return `<button class="np-ch" onclick="choosePres(${i})">
+          <div>${String.fromCharCode(9312+i)} ${chText}</div>
+        </button>`;
+      }).join('')}
     </div>
   `;
   card.style.animation='none';
@@ -1361,28 +1638,29 @@ function choosePres(idx){
   G.pMedia=clamp(G.pMedia,0,100);
   
   // Notification
+  const isZhP=LANG==='zh';
   const dA=Math.round(G.pApproval-before.a);
   const dE=Math.round(G.pEconomy-before.e);
   const dM=Math.round(G.pMilitary-before.m);
   const dMed=Math.round(G.pMedia-before.med);
   let parts=[];
-  if(dA!==0)parts.push(`Approval ${dA>0?'+':''}${dA}`);
-  if(dE!==0)parts.push(`Economy ${dE>0?'+':''}${dE}`);
-  if(dM!==0)parts.push(`Military ${dM>0?'+':''}${dM}`);
-  if(dMed!==0)parts.push(`Media ${dMed>0?'+':''}${dMed}`);
+  if(dA!==0)parts.push(`${t('APPROVAL')} ${dA>0?'+':''}${dA}`);
+  if(dE!==0)parts.push(`${t('ECONOMY')} ${dE>0?'+':''}${dE}`);
+  if(dM!==0)parts.push(`${t('MILITARY')} ${dM>0?'+':''}${dM}`);
+  if(dMed!==0)parts.push(`${t('MEDIA')} ${dMed>0?'+':''}${dMed}`);
   const total=dA+dE+dM+dMed;
   showNotif(
-    total>0?'DECISION PRAISED':'DECISION CRITICIZED',
-    parts.join(' · ')||'No change.',
+    t(total>0?'DECISION PRAISED':'DECISION CRITICIZED'),
+    parts.join(' · ')||t('No change.'),
     total>0?'pos':'neg'
   );
   
   // Warning at low approval
   if(G.pApproval<25&&G.pApproval>=20){
-    showNotif('⚠️ IMPEACHMENT RISK','Your approval is dangerously low. Congress is restless.','neg');
+    showNotif(t('⚠️ IMPEACHMENT RISK'),t('Your approval is dangerously low. Congress is restless.'),'neg');
   }
   if(G.pEconomy<15&&G.pEconomy>=10){
-    showNotif('⚠️ ECONOMIC CRISIS','Markets are crashing. Economic collapse imminent.','neg');
+    showNotif(t('⚠️ ECONOMIC CRISIS'),t('Markets are crashing. Economic collapse imminent.'),'neg');
   }
   
   G.presEventIdx++;
@@ -1397,71 +1675,91 @@ const ENDINGS={
   loss:{
     emoji:'🗳️',
     title:'DEFEATED',
+    titleZh:'落选',
     color:'#ff6b6b',
     sub:'The American people have spoken. Your time on the campaign trail is over.',
+    subZh:'美国人民已经发声。你的竞选之路就此终结。',
     desc:'Your campaign ended before it could begin. The margins were too thin, the stars not aligned. But in the crucible of defeat, future presidents are forged. History is generous to those who tried.',
+    descZh:'你的竞选还未真正开始便已落幕。差距太大，天时不顺。但在失败的熔炉中，未来的总统由此铸就。历史对那些曾经尝试的人总是宽容的。',
   },
   impeach:{
     emoji:'💀',
     title:'IMPEACHED',
+    titleZh:'遭弹劾',
     color:'#e63946',
     sub:'The House has voted. The Senate has convicted. Your presidency is over.',
+    subZh:'众议院已投票，参议院已定罪。你的总统任期就此终结。',
     desc:'History will debate the causes: reckless decisions, political overreach, or simply the wrong person at the wrong moment. Your approval collapsed, and with it, your mandate. You leave the Oval Office in disgrace — but America endures.',
+    descZh:'历史将争论其中的原因：鲁莽的决策、政治上的越权，还是纯粹在错误的时刻选错了人。你的支持率崩塌，你的执政授权也随之化为乌有。你带着耻辱离开椭圆形办公室——但美国依然屹立。',
   },
   econ:{
     emoji:'📉',
     title:'ECONOMIC COLLAPSE',
+    titleZh:'经济崩溃',
     color:'#ff922b',
     sub:'The markets have spoken. The economy has spoken. Your presidency has ended in financial ruin.',
+    subZh:'市场已经表态，经济已经表态。你的总统任期以财政崩溃告终。',
     desc:'The breadlines stretch around the block. Your economic decisions — whether by ideology, misfortune, or poor advice — brought the nation to its knees. Historians will argue for decades. Markets recovered. Reputations did not.',
+    descZh:'救济队伍绕街而排。你的经济决策——无论是意识形态使然、命运弄人还是谋略失当——将这个国家逼上了绝路。历史学家将争论数十年。市场终将复苏，名誉却再难挽回。',
   },
   mediocre:{
     emoji:'🌟',
     title:'A MEDIOCRE TERM',
+    titleZh:'平庸的任期',
     color:'#aaa',
     sub:'You served your term. The country survived. Is that enough?',
+    subZh:'你完成了任期，国家撑了下来。这就够了吗？',
     desc:'You kept the lights on. You didn\'t start any wars. The economy limped along. Future presidents will cite you as a cautionary tale of missed opportunities. But you left office with the republic intact — and that, history sometimes decides, is everything.',
+    descZh:'你维持了基本运转，没有挑起战争，经济勉强维持。未来的总统将以你为失去机遇的警示。但你离任时，共和国依然完好——而这，历史有时会认为，已是一切。',
   },
   respected:{
     emoji:'🦅',
     title:'A RESPECTED PRESIDENCY',
+    titleZh:'受人尊敬的总统',
     color:'#74c0fc',
     sub:'They\'ll put your face on something someday. Maybe.',
+    subZh:'总有一天，他们会把你的脸印在什么东西上。也许吧。',
     desc:'Your presidency will be remembered as steady, competent, and occasionally brilliant. You made the hard calls. You led with conviction balanced by wisdom. Americans didn\'t always agree with you — but they trusted you. That\'s rarer than it sounds.',
+    descZh:'你的总统任期将被铭记为稳健、能干，偶尔出彩。你做出了艰难抉择，以信念与智慧兼顾的方式领导国家。美国人并不总是认同你——但他们信任你。这比听起来要难得多。',
   },
   legend:{
     emoji:'👑',
     title:'LEGENDARY PRESIDENT',
+    titleZh:'传奇总统',
     color:'#ffd60a',
     sub:'The historians are already arguing about where to put you in the rankings.',
+    subZh:'历史学家们已经开始争论，该把你排在哪个位置了。',
     desc:'Once in a generation, a president rises above the noise of politics and becomes something more — a symbol, a standard, a name invoked by future leaders reaching for greatness. That is you. Your approval, economy, military, and media legacy are off the charts. Your portrait will hang in every school in America. Your name will echo.',
+    descZh:'一代人中，偶有一位总统能超越政治的喧嚣，成为更伟大的存在——一个象征，一座标杆，一个被后世领袖追求卓越时反复援引的名字。那就是你。你的支持率、经济、军事、媒体遗产全部爆表。你的画像将悬挂在美国每一所学校。你的名字将久久回响。',
   },
 };
 
 function triggerEnding(type){
   const e=ENDINGS[type];
+  const isZhE=LANG==='zh';
   const avg=Math.round((G.pApproval+G.pEconomy+G.pMilitary+G.pMedia)/4);
   
   const goEl=document.getElementById('goInner');
+  G._lastEndingType=type;
   
   // Build ending stats
   let statsHTML='';
   if(type!=='loss'){
     statsHTML=`
       <div class="go-stats">
-        <div class="go-stat"><span class="go-stat-v" style="color:#74c0fc">${Math.round(G.pApproval)}</span><span class="go-stat-l">APPROVAL</span></div>
-        <div class="go-stat"><span class="go-stat-v" style="color:#4caf50">${Math.round(G.pEconomy)}</span><span class="go-stat-l">ECONOMY</span></div>
-        <div class="go-stat"><span class="go-stat-v" style="color:#ef5350">${Math.round(G.pMilitary)}</span><span class="go-stat-l">MILITARY</span></div>
-        <div class="go-stat"><span class="go-stat-v" style="color:#9c27b0">${Math.round(G.pMedia)}</span><span class="go-stat-l">MEDIA</span></div>
-        <div class="go-stat"><span class="go-stat-v" style="color:${e.color}">${avg}</span><span class="go-stat-l">LEGACY SCORE</span></div>
+        <div class="go-stat"><span class="go-stat-v" style="color:#74c0fc">${Math.round(G.pApproval)}</span><span class="go-stat-l">${t('APPROVAL')}</span></div>
+        <div class="go-stat"><span class="go-stat-v" style="color:#4caf50">${Math.round(G.pEconomy)}</span><span class="go-stat-l">${t('ECONOMY')}</span></div>
+        <div class="go-stat"><span class="go-stat-v" style="color:#ef5350">${Math.round(G.pMilitary)}</span><span class="go-stat-l">${t('MILITARY')}</span></div>
+        <div class="go-stat"><span class="go-stat-v" style="color:#9c27b0">${Math.round(G.pMedia)}</span><span class="go-stat-l">${t('MEDIA')}</span></div>
+        <div class="go-stat"><span class="go-stat-v" style="color:${e.color}">${avg}</span><span class="go-stat-l">${t('LEGACY SCORE')}</span></div>
       </div>
     `;
   } else {
     statsHTML=`
       <div class="go-stats">
-        <div class="go-stat"><span class="go-stat-v" style="color:#74c0fc">${G.approval}</span><span class="go-stat-l">FINAL APPROVAL</span></div>
-        <div class="go-stat"><span class="go-stat-v" style="color:#4caf50">${G.electorate}</span><span class="go-stat-l">ELECT. VOTES</span></div>
-        <div class="go-stat"><span class="go-stat-v" style="color:#ffd60a">${G.funds}</span><span class="go-stat-l">FUNDS LEFT</span></div>
+        <div class="go-stat"><span class="go-stat-v" style="color:#74c0fc">${G.approval}</span><span class="go-stat-l">${t('FINAL APPROVAL')}</span></div>
+        <div class="go-stat"><span class="go-stat-v" style="color:#4caf50">${G.electorate}</span><span class="go-stat-l">${t('ELECT. VOTES')}</span></div>
+        <div class="go-stat"><span class="go-stat-v" style="color:#ffd60a">${G.funds}</span><span class="go-stat-l">${t('FUNDS LEFT')}</span></div>
       </div>
     `;
   }
@@ -1471,20 +1769,25 @@ function triggerEnding(type){
   const rating=type==='legend'?5:type==='respected'?4:type==='mediocre'?3:type==='loss'?2:1;
   for(let i=0;i<5;i++) stars+=`<span style="color:${i<rating?'#ffd60a':'#333'};font-size:28px">★</span>`;
   
+  const eTitle=isZhE&&e.titleZh?e.titleZh:e.title;
+  const eSub=isZhE&&e.subZh?e.subZh:e.sub;
+  const eDesc=isZhE&&e.descZh?e.descZh:e.desc;
+  const decisionsLabel=isZhE?(type!=='loss'?G.presEventIdx+' 项总统决策':G.campEventIdx+' 场竞选事件'):(type!=='loss'?G.presEventIdx+' PRESIDENTIAL DECISIONS':G.campEventIdx+' CAMPAIGN EVENTS');
+  
   goEl.innerHTML=`
     <div class="go-emoji">${e.emoji}</div>
-    <div class="go-title" style="color:${e.color}">${e.title}</div>
-    <div class="go-sub">${e.sub}</div>
+    <div class="go-title" style="color:${e.color}">${eTitle}</div>
+    <div class="go-sub">${eSub}</div>
     ${statsHTML}
     <div style="margin-bottom:12px">${stars}</div>
-    <div class="go-desc">${e.desc}</div>
+    <div class="go-desc">${eDesc}</div>
     <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:16px">
-      <button class="btn-restart" onclick="location.reload()">🔄 PLAY AGAIN</button>
-      <button class="btn-restart" onclick="shareResult('${type}',${avg})" style="border-color:#aaa;color:#aaa">📋 SHARE RESULT</button>
+      <button class="btn-restart" onclick="location.reload()">${t('🔄 PLAY AGAIN')}</button>
+      <button class="btn-restart" onclick="shareResult('${type}',${avg})" style="border-color:#aaa;color:#aaa">${t('📋 SHARE RESULT')}</button>
     </div>
     <div style="font-family:Special Elite,cursive;font-size:10px;color:#333;margin-top:24px;letter-spacing:2px">
       ${G.candidate?G.candidate.name+' · '+G.candidate.party:''}
-      &nbsp;·&nbsp; ${type!=='loss'?G.presEventIdx+' PRESIDENTIAL DECISIONS':G.campEventIdx+' CAMPAIGN EVENTS'}
+      &nbsp;·&nbsp; ${decisionsLabel}
     </div>
   `;
   
@@ -1492,13 +1795,22 @@ function triggerEnding(type){
 }
 
 function shareResult(type, avg){
-  const text=`I just played US President Simulator V2!
-Ending: ${ENDINGS[type].title} ${ENDINGS[type].emoji}
+  const isZhS=LANG==='zh';
+  const e=ENDINGS[type];
+  const eTitle=isZhS&&e.titleZh?e.titleZh:e.title;
+  const candName=G.candidate?G.candidate.name:'';
+  const text=isZhS?
+`我刚玩了美国总统模拟器 V2！
+结局：${eTitle} ${e.emoji}
+历史评分：${avg}/100
+候选人：${candName}
+`:`I just played US President Simulator V2!
+Ending: ${e.title} ${e.emoji}
 Legacy Score: ${avg}/100
-Candidate: ${G.candidate?G.candidate.name:''}
+Candidate: ${candName}
 `;
   if(navigator.clipboard){
-    navigator.clipboard.writeText(text).then(()=>showNotif('COPIED','Result copied to clipboard!','pos'));
+    navigator.clipboard.writeText(text).then(()=>showNotif(t('COPIED'),t('Result copied to clipboard!'),'pos'));
   }
 }
 
@@ -1522,10 +1834,27 @@ document.addEventListener('keydown',e=>{
 });
 
 // ============================================================
+// REDRAW (for language toggle)
+// ============================================================
+function redrawCurrentScreen(){
+  const s=G.screen;
+  if(s==='intro'){ initIntro(); renderIntroText(); }
+  else if(s==='char-select'){ initCharSelect(); }
+  else if(s==='campaign'){ renderCampStats(); renderCampEvent(); }
+  else if(s==='election-night'){ /* live animation, skip */ }
+  else if(s==='presidency'){ renderPresStats(); renderPresEvent(); }
+  else if(s==='game-over'){
+    // re-trigger ending
+    if(G._lastEndingType) triggerEnding(G._lastEndingType);
+  }
+}
+
+// ============================================================
 // BOOT
 // ============================================================
 window.addEventListener('load',()=>{
   initIntro();
+  renderIntroText();
   showScreen('intro');
 });
 </script>
