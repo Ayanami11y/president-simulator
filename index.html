@@ -1592,8 +1592,8 @@ function renderPresStats(){
     isZh?`第 ${G.presEventIdx} 个事件 / 40  ·  第 ${Math.floor(dayOfYear+1)} 天 / 1460`
         :`EVENT ${G.presEventIdx} OF 40  ·  DAY ${Math.floor(dayOfYear+1)} OF 1460`;
   // Presidency header
-  document.querySelector('.pres-logo').textContent=
-    isZh?'🏛️ 美国编年史':'🏛️ THE AMERICAN CHRONICLE';
+  const presLogo = document.querySelector('.pres-logo') || document.querySelector('.np-name');
+  if(presLogo) presLogo.textContent=isZh?'🏛️ 美国编年史':'🏛️ THE AMERICAN CHRONICLE';
 }
 
 function renderPresEvent(){
