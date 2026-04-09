@@ -648,7 +648,6 @@ const CAMPAIGN_EVENTS = [
       {text: 'Call every uncommitted swing district personally. All night.', effect: '+Electorate big, small approval bump', fn: s=>{ s.electorate += rand(12,22); s.approval += rand(2,6) }},
     ]
   },
-,
   {
     tag: 'WHISTLEBLOWER',
     headline: 'CAMPAIGN INSIDER GOES TO THE PRESS',
@@ -1286,6 +1285,7 @@ function selectCandidate(c){
   // Reset campaign stats
   G.approval=45; G.funds=60; G.electorate=220;
   G.campEventIdx=0;
+  _electionStarted=false; // allow election night to run fresh
   // Apply start bonus
   if(c.startBonus){
     if(c.startBonus.pMedia) G.pMedia=50+c.startBonus.pMedia;
@@ -1365,9 +1365,10 @@ function renderCampEvent(){
     <div class="choices">
       ${ev.choices.map((ch,i)=>{
         const chText=isZh&&evZh&&evZh.choices[i]?evZh.choices[i]:ch.text;
+        const effHtml=isZh?'':'<div class="ch-eff">→ '+ch.effect+'</div>';
         return `<button class="ch-btn" onclick="chooseCamp(${i})">
           <span>${String.fromCharCode(65+i)}. ${chText}</span>
-          <div class="ch-eff">→ ${isZh?'':ch.effect}</div>
+          ${effHtml}
         </button>`;
       }).join('')}
     </div>
@@ -1378,6 +1379,8 @@ function renderCampEvent(){
 }
 
 function chooseCamp(idx){
+  if(G.campChoosing) return;
+  G.campChoosing=true;
   const ev=CAMPAIGN_EVENTS[G.campEventIdx];
   const ch=ev.choices[idx];
   
@@ -1413,13 +1416,16 @@ function chooseCamp(idx){
   
   G.campEventIdx++;
   renderCampStats();
-  setTimeout(renderCampEvent, 300);
+  setTimeout(()=>{G.campChoosing=false; renderCampEvent();}, 300);
 }
 
 // ============================================================
 // ELECTION NIGHT
 // ============================================================
+let _electionStarted = false;
 function startElectionNight(){
+  if(_electionStarted) return;
+  _electionStarted = true;
   showScreen('election-night');
   
   const isZhEN=LANG==='zh';
@@ -1479,55 +1485,62 @@ function startElectionNight(){
   const steps=20;
   let step=0;
   const iv=setInterval(()=>{
-    step++;
-    const progress=step/steps;
-    const eased=progress<.5?2*progress*progress:(1-Math.pow(-2*progress+2,2)/2);
-    
-    let pEV=Math.round(eased*playerEV);
-    let oEV=Math.round(eased*oppEV);
-    
-    if(isPlayerDem||G.candidate.id==='ind'){
-      demEV=pEV; repEV=oEV;
-    } else {
-      repEV=pEV; demEV=oEV;
-    }
-    
-    document.getElementById('evnDem').textContent=demEV;
-    document.getElementById('evnRep').textContent=repEV;
-    document.getElementById('mapDem').style.width=(demEV/5.38)+'%';
-    document.getElementById('mapRep').style.width=(repEV/5.38)+'%';
-    
-    if(step===steps){
-      clearInterval(iv);
+    try {
+      step++;
+      const progress=step/steps;
+      const eased=progress<.5?2*progress*progress:(1-Math.pow(-2*progress+2,2)/2);
       
-      document.getElementById('evnDem').textContent=
-        (isPlayerDem||G.candidate.id==='ind')?playerEV:oppEV;
-      document.getElementById('evnRep').textContent=
-        isPlayerRep?playerEV:oppEV;
+      let pEV=Math.round(eased*playerEV);
+      let oEV=Math.round(eased*oppEV);
       
-      const isZhR=LANG==='zh';
-      if(playerWins){
-        document.getElementById('enStatus').textContent=isZhR?'🏆 预计获胜者':'🏆 PROJECTED WINNER';
-        const idx2=CANDIDATES.indexOf(G.candidate);
-        const wName=isZhR&&idx2>=0?CANDIDATES_ZH[idx2].name:G.candidate.name;
-        document.getElementById('enWinner').textContent=
-          isZhR?`${wName} 获胜！`:`${G.candidate.name.toUpperCase()} WINS!`;
-        document.getElementById('enWinner').style.color='#ffd60a';
-        showNotif(isZhR?'选举结果揭晓':'ELECTION CALLED',isZhR?'您赢得了总统职位！':'You have won the presidency!','pos');
+      if(isPlayerDem||G.candidate.id==='ind'){
+        demEV=pEV; repEV=oEV;
       } else {
-        document.getElementById('enStatus').textContent=isZhR?'📺 比赛结果揭晓':'📺 RACE CALLED';
-        document.getElementById('enWinner').textContent=isZhR?'失败，这次不行。':'DEFEAT. NOT THIS TIME.';
-        document.getElementById('enWinner').style.color='#ff6b6b';
-        showNotif(isZhR?'比赛结果出炉':'RACE CALLED',isZhR?'您在此次选举中落败。':'You have lost the election.','neg');
+        repEV=pEV; demEV=oEV;
       }
       
-      setTimeout(()=>{
+      document.getElementById('evnDem').textContent=demEV;
+      document.getElementById('evnRep').textContent=repEV;
+      document.getElementById('mapDem').style.width=(demEV/5.38)+'%';
+      document.getElementById('mapRep').style.width=(repEV/5.38)+'%';
+      
+      if(step===steps){
+        clearInterval(iv);
+        
+        document.getElementById('evnDem').textContent=
+          (isPlayerDem||G.candidate.id==='ind')?playerEV:oppEV;
+        document.getElementById('evnRep').textContent=
+          isPlayerRep?playerEV:oppEV;
+        
+        const isZhR=LANG==='zh';
         if(playerWins){
-          startPresidency();
+          document.getElementById('enStatus').textContent=isZhR?'🏆 预计获胜者':'🏆 PROJECTED WINNER';
+          const idx2=CANDIDATES.indexOf(G.candidate);
+          const wName=isZhR&&idx2>=0?CANDIDATES_ZH[idx2].name:G.candidate.name;
+          document.getElementById('enWinner').textContent=
+            isZhR?`${wName} 获胜！`:`${G.candidate.name.toUpperCase()} WINS!`;
+          document.getElementById('enWinner').style.color='#ffd60a';
+          showNotif(isZhR?'选举结果揭晓':'ELECTION CALLED',isZhR?'您赢得了总统职位！':'You have won the presidency!','pos');
         } else {
-          triggerEnding('loss');
+          document.getElementById('enStatus').textContent=isZhR?'📺 比赛结果揭晓':'📺 RACE CALLED';
+          document.getElementById('enWinner').textContent=isZhR?'失败，这次不行。':'DEFEAT. NOT THIS TIME.';
+          document.getElementById('enWinner').style.color='#ff6b6b';
+          showNotif(isZhR?'比赛结果出炉':'RACE CALLED',isZhR?'您在此次选举中落败。':'You have lost the election.','neg');
         }
-      }, 3500);
+        
+        setTimeout(()=>{
+          if(playerWins){
+            startPresidency();
+          } else {
+            triggerEnding('loss');
+          }
+        }, 1500);
+      }
+    } catch(e) {
+      clearInterval(iv);
+      console.error('Election night error:', e);
+      // fallback: proceed anyway
+      setTimeout(()=>{ if(G.won) startPresidency(); else triggerEnding('loss'); }, 500);
     }
   }, 200);
 }
@@ -1627,6 +1640,8 @@ function renderPresEvent(){
 }
 
 function choosePres(idx){
+  if(G.presChoosing) return;
+  G.presChoosing=true;
   const ev=PRESIDENCY_EVENTS[G.presEventIdx];
   const ch=ev.choices[idx];
   
@@ -1665,7 +1680,7 @@ function choosePres(idx){
   
   G.presEventIdx++;
   renderPresStats();
-  setTimeout(renderPresEvent,300);
+  setTimeout(()=>{G.presChoosing=false; renderPresEvent();},300);
 }
 
 // ============================================================
