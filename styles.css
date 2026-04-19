@@ -1,0 +1,173 @@
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Libre Baskerville",serif;overflow:hidden;background:#000;color:#fff;width:100vw;height:100vh;position:relative}
+#game{width:100%;height:100%;position:relative}
+.screen{display:none;width:100%;height:100%;position:absolute;top:0;left:0;flex-direction:column;align-items:center;justify-content:center}
+.screen.active{display:flex}
+
+/* INTRO */
+#intro{background:radial-gradient(ellipse at 50% 30%,#1a1a4e 0%,#0a0a1a 60%,#000 100%);position:relative;overflow:hidden}
+.stars-bg{position:absolute;inset:0;pointer-events:none;z-index:0}
+.star-dot{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:twinkle 3s infinite alternate}
+@keyframes twinkle{0%{opacity:.2}100%{opacity:1}}
+.intro-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:0}
+.flag-wrap{width:280px;height:147px;border:3px solid rgba(255,255,255,.3);overflow:hidden;margin-bottom:28px;box-shadow:0 0 60px rgba(60,59,110,.6),0 0 20px rgba(178,34,52,.3)}
+.flag-stripes{width:100%;height:100%;display:flex;flex-direction:column}
+.fs{flex:1}
+.fs.r{background:#B22234}.fs.w{background:#FFFFFF}
+.canton{position:absolute;top:0;left:0;width:40%;height:calc(7/13*147px);background:#3C3B6E;display:flex;flex-wrap:wrap;align-items:center;justify-center:center;padding:4px 2px;gap:1px}
+.flag-wrap{position:relative}
+.star{color:#fff;font-size:7px;flex:0 0 calc(100%/6)}
+.intro-title{font-family:"Bebas Neue",cursive;font-size:clamp(52px,9vw,96px);letter-spacing:10px;text-align:center;line-height:.9;background:linear-gradient(180deg,#fff 0%,#ffd60a 55%,#e63946 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 30px rgba(255,214,10,.3))}
+.intro-v2{font-family:"Special Elite",cursive;font-size:13px;letter-spacing:8px;color:#666;margin-top:4px;text-align:center}
+.intro-sub{font-family:"Special Elite",cursive;font-size:14px;letter-spacing:4px;color:#aac4d0;margin:16px 0 44px;text-align:center}
+.btn-play{font-family:"Bebas Neue",cursive;font-size:28px;letter-spacing:6px;background:linear-gradient(135deg,#e63946,#9b1f2a);color:#fff;border:none;padding:16px 64px;cursor:pointer;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);box-shadow:0 0 40px rgba(230,57,70,.5);transition:all .3s;position:relative;overflow:hidden}
+.btn-play:hover{transform:scale(1.06);box-shadow:0 0 70px rgba(230,57,70,.8)}
+.btn-play::after{content:"";position:absolute;top:-50%;left:-80%;width:40%;height:200%;background:rgba(255,255,255,.2);transform:skewX(-20deg);transition:left .5s}
+.btn-play:hover::after{left:150%}
+.intro-actions{display:flex;flex-direction:column;align-items:center;gap:14px}
+.intro-save-actions{display:flex;flex-direction:column;align-items:center;gap:12px}
+.intro-save-status{font-family:"Special Elite",cursive;font-size:11px;letter-spacing:1.5px;color:#7f8c9f;text-align:center;max-width:520px;line-height:1.5}
+.btn-secondary{font-family:"Special Elite",cursive;font-size:12px;letter-spacing:3px;background:transparent;color:#d8dce6;border:1px solid rgba(255,255,255,.28);padding:12px 24px;cursor:pointer;transition:all .2s}
+.btn-secondary:hover{background:rgba(255,255,255,.08);border-color:#ffd60a;color:#ffd60a}
+.intro-credits{font-family:"Special Elite",cursive;font-size:10px;color:#333;margin-top:32px;letter-spacing:2px}
+
+/* CHARACTER SELECT */
+#char-select{background:linear-gradient(180deg,#0a0a1a,#111130);overflow-y:auto;justify-content:flex-start;padding:32px 16px 32px}
+.sel-title{font-family:"Bebas Neue",cursive;font-size:clamp(28px,5vw,52px);letter-spacing:6px;color:#ffd60a;text-shadow:0 0 20px rgba(255,214,10,.4);margin-bottom:6px;text-align:center}
+.sel-sub{font-family:"Special Elite",cursive;font-size:12px;letter-spacing:3px;color:#666;margin-bottom:32px;text-align:center}
+.cands{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;max-width:960px}
+.cand-card{width:280px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);padding:28px 20px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;clip-path:polygon(0 0,calc(100%-14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100%-14px))}
+.cand-card:hover{transform:translateY(-6px)}
+.cand-card.dem:hover{background:rgba(29,53,87,.25);box-shadow:0 0 50px rgba(29,53,87,.5),0 20px 40px rgba(0,0,0,.5)}
+.cand-card.rep:hover{background:rgba(230,57,70,.12);box-shadow:0 0 50px rgba(230,57,70,.35),0 20px 40px rgba(0,0,0,.5)}
+.cand-card.ind:hover{background:rgba(255,214,10,.08);box-shadow:0 0 50px rgba(255,214,10,.25),0 20px 40px rgba(0,0,0,.5)}
+.cand-card.dem{border-color:rgba(29,53,87,.6)}
+.cand-card.rep{border-color:rgba(230,57,70,.6)}
+.cand-card.ind{border-color:rgba(255,214,10,.6)}
+.cand-emo{font-size:52px;display:block;text-align:center;margin-bottom:14px}
+.cand-name{font-family:"Bebas Neue",cursive;font-size:26px;letter-spacing:3px;text-align:center;margin-bottom:3px}
+.cand-card.dem .cand-name{color:#4dabf7}
+.cand-card.rep .cand-name{color:#ff6b6b}
+.cand-card.ind .cand-name{color:#ffd60a}
+.cand-party{font-family:"Special Elite",cursive;font-size:10px;letter-spacing:3px;color:#555;text-align:center;margin-bottom:14px;text-transform:uppercase}
+.cand-bio{font-size:12px;color:#bbb;line-height:1.6;text-align:center;margin-bottom:16px}
+.cand-tags{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.tag{font-family:"Special Elite",cursive;font-size:9px;padding:3px 7px;letter-spacing:1px;border-radius:2px}
+.dem .tag{background:rgba(77,171,247,.15);color:#4dabf7;border:1px solid rgba(77,171,247,.25)}
+.rep .tag{background:rgba(255,107,107,.15);color:#ff6b6b;border:1px solid rgba(255,107,107,.25)}
+.ind .tag{background:rgba(255,214,10,.12);color:#ffd60a;border:1px solid rgba(255,214,10,.22)}
+.cand-bonus{font-size:10px;font-family:"Special Elite",cursive;color:#666;text-align:center;margin-top:10px;font-style:italic}
+
+/* STATS BAR (campaign) */
+.camp-header{background:rgba(0,0,0,.7);border-bottom:2px solid rgba(255,255,255,.08);padding:10px 20px;display:flex;align-items:center;gap:12px;flex-shrink:0;width:100%}
+.camp-logo{font-family:"Bebas Neue",cursive;font-size:18px;letter-spacing:3px;color:#ffd60a}
+.camp-cand-name{font-family:"Special Elite",cursive;font-size:12px;color:#888;letter-spacing:2px}
+.ev-cnt{font-family:"Special Elite",cursive;font-size:11px;color:#555;margin-left:auto;letter-spacing:1px}
+.stats-row{background:rgba(0,0,0,.6);border-bottom:1px solid rgba(255,255,255,.06);padding:8px 20px;display:flex;gap:16px;flex-wrap:wrap;flex-shrink:0;width:100%}
+.stat-it{display:flex;align-items:center;gap:8px;flex:1;min-width:130px}
+.slabel{font-family:"Special Elite",cursive;font-size:10px;letter-spacing:2px;color:#777;white-space:nowrap}
+.sbar-o{flex:1;height:7px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden}
+.sbar-i{height:100%;border-radius:4px;transition:width .7s cubic-bezier(.4,0,.2,1)}
+.sa .sbar-i{background:linear-gradient(90deg,#4dabf7,#74c0fc);box-shadow:0 0 8px rgba(77,171,247,.4)}
+.sf .sbar-i{background:linear-gradient(90deg,#ffd60a,#ffe066);box-shadow:0 0 8px rgba(255,214,10,.4)}
+.se .sbar-i{background:linear-gradient(90deg,#51cf66,#8ce99a);box-shadow:0 0 8px rgba(81,207,102,.4)}
+.sval{font-family:"Bebas Neue",cursive;font-size:13px;min-width:26px;text-align:right}
+
+/* CAMPAIGN EVENTS */
+#campaign{justify-content:flex-start;background:linear-gradient(180deg,#07070f,#0d1525)}
+.camp-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow-y:auto;width:100%}
+.ev-card{max-width:660px;width:100%;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.6);animation:cardIn .4s ease-out}
+@keyframes cardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.ev-tag{font-family:"Special Elite",cursive;font-size:9px;letter-spacing:4px;padding:7px 18px;background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.06);color:#555;text-transform:uppercase}
+.ev-hl{font-family:"Bebas Neue",cursive;font-size:clamp(22px,4vw,38px);letter-spacing:2px;padding:20px 20px 10px;line-height:1.1;background:linear-gradient(180deg,#fff,#ccc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ev-body{font-size:13px;color:#999;line-height:1.7;padding:0 20px 16px}
+.ev-flavor{font-family:"Special Elite",cursive;font-size:11px;color:#444;padding:10px 20px;border-top:1px solid rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.04);font-style:italic;background:rgba(255,255,255,.015);margin-bottom:16px}
+.choices{display:flex;flex-direction:column;gap:8px;padding:0 20px 20px}
+.ch-btn{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);color:#ccc;padding:12px 16px 12px 28px;text-align:left;cursor:pointer;font-family:"Libre Baskerville",serif;font-size:12.5px;line-height:1.5;transition:all .22s;position:relative}
+.ch-btn::before{content:"►";position:absolute;left:10px;top:50%;transform:translateY(-50%) scale(0);color:#ffd60a;font-size:9px;transition:transform .18s}
+.ch-btn:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.25);color:#fff;transform:translateX(3px)}
+.ch-btn:hover::before{transform:translateY(-50%) scale(1)}
+.ch-eff{font-size:10.5px;color:#555;margin-top:3px;font-style:italic}
+
+/* ELECTION NIGHT */
+#election-night{background:#000;flex-direction:column}
+.en-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;position:relative;z-index:1}
+.en-logo{font-family:"Bebas Neue",cursive;font-size:clamp(28px,5vw,56px);color:#e63946;letter-spacing:6px;text-shadow:0 0 40px rgba(230,57,70,.7);margin-bottom:4px}
+.en-net{font-family:"Special Elite",cursive;font-size:13px;letter-spacing:5px;color:#555;margin-bottom:36px}
+.ev-map{width:min(480px,90vw);height:56px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:3px;overflow:hidden;display:flex;margin-bottom:20px;position:relative}
+.ev-map-dem{background:linear-gradient(90deg,#1d3557,#2d6a9f);height:100%;transition:width 1.2s ease-in-out}
+.ev-map-rep{background:linear-gradient(90deg,#c1121f,#e63946);height:100%;transition:width 1.2s ease-in-out}
+.ev-map-mid{position:absolute;left:50%;top:0;bottom:0;width:2px;background:rgba(255,255,255,.35)}
+.ev-map-mid::after{content:"270";position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:"Special Elite",cursive;font-size:10px;color:rgba(255,255,255,.4)}
+.ev-nums{display:flex;gap:48px;margin-bottom:36px}
+.evn-side{text-align:center}
+.evn-n{font-family:"Bebas Neue",cursive;font-size:clamp(52px,9vw,90px);line-height:1}
+.evn-dem .evn-n{color:#4dabf7;text-shadow:0 0 30px rgba(77,171,247,.5)}
+.evn-rep .evn-n{color:#ff6b6b;text-shadow:0 0 30px rgba(255,107,107,.5)}
+.evn-lbl{font-family:"Special Elite",cursive;font-size:11px;letter-spacing:3px;color:#555}
+.en-status{font-family:"Bebas Neue",cursive;font-size:clamp(18px,3.5vw,32px);letter-spacing:4px;color:#ffd60a;min-height:40px;text-align:center}
+.en-winner{font-family:"Bebas Neue",cursive;font-size:clamp(24px,4.5vw,48px);letter-spacing:4px;margin-top:16px;animation:pulse 1s ease-in-out infinite alternate;text-align:center}
+@keyframes pulse{from{opacity:.7;transform:scale(.97)}to{opacity:1;transform:scale(1.03)}}
+.ticker-bar{position:absolute;bottom:0;left:0;right:0;background:#e63946;padding:9px 0;overflow:hidden;flex-shrink:0}
+.ticker-inner{white-space:nowrap;display:inline-flex;animation:tick 14s linear infinite}
+.ticker-item{font-family:"Bebas Neue",cursive;font-size:16px;letter-spacing:3px;color:#fff;padding:0 48px}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* PRESIDENCY */
+#presidency{background:#f5f0e8;color:#1a1a2e;justify-content:flex-start}
+.np-header{background:#f5f0e8;border-bottom:3px solid #1a1a2e;padding:10px 22px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;width:100%;box-shadow:0 1px 6px rgba(0,0,0,.1)}
+.np-name{font-family:"Playfair Display",serif;font-size:clamp(18px,3vw,28px);font-weight:900;color:#1a1a2e;letter-spacing:2px}
+.np-date{font-family:"Special Elite",cursive;font-size:10px;color:#888;letter-spacing:2px}
+.np-stats{background:#ede8dc;border-bottom:2px solid #1a1a2e;padding:7px 22px;display:flex;gap:14px;flex-wrap:wrap;flex-shrink:0;width:100%}
+.ps-it{display:flex;align-items:center;gap:7px;flex:1;min-width:110px}
+.ps-lbl{font-family:"Special Elite",cursive;font-size:9px;letter-spacing:2px;color:#888;white-space:nowrap}
+.ps-bar-o{flex:1;height:5px;background:rgba(0,0,0,.12);border-radius:3px;overflow:hidden}
+.ps-bar-i{height:100%;border-radius:3px;transition:width .7s}
+.ps-appr .ps-bar-i{background:linear-gradient(90deg,#1d3557,#4dabf7)}
+.ps-econ .ps-bar-i{background:linear-gradient(90deg,#1b5e20,#4caf50)}
+.ps-mil .ps-bar-i{background:linear-gradient(90deg,#b71c1c,#ef5350)}
+.ps-med .ps-bar-i{background:linear-gradient(90deg,#4a148c,#9c27b0)}
+.ps-val{font-family:"Playfair Display",serif;font-weight:700;font-size:11px;color:#1a1a2e;min-width:20px}
+.np-body{flex:1;display:flex;flex-direction:column;align-items:center;padding:20px;overflow-y:auto;width:100%}
+.np-card{max-width:660px;width:100%;background:#faf6ef;border:1px solid #c8c0b0;box-shadow:2px 3px 12px rgba(0,0,0,.15);animation:cardIn .4s ease-out}
+.np-banner{background:#1a1a2e;color:#f5f0e8;padding:7px 18px;font-family:"Special Elite",cursive;font-size:9px;letter-spacing:4px;display:flex;justify-content:space-between}
+.np-hl{font-family:"Playfair Display",serif;font-weight:900;font-size:clamp(20px,3.5vw,34px);line-height:1.15;color:#1a1a2e;padding:18px 20px 10px;border-bottom:1px solid #c8c0b0}
+.np-dateline{font-family:"Special Elite",cursive;font-size:9px;color:#aaa;padding:8px 20px 0;letter-spacing:2px}
+.np-body-text{font-family:"Libre Baskerville",serif;font-size:12.5px;color:#333;line-height:1.8;padding:10px 20px 16px}
+.np-quote{font-family:"Playfair Display",serif;font-style:italic;font-size:14px;color:#8b0000;padding:14px 20px;border-top:2px solid #1a1a2e;border-bottom:1px solid #c8c0b0;margin:0 20px 14px;text-align:center}
+.np-choices{display:flex;flex-direction:column;gap:7px;padding:0 20px 20px}
+.np-ch{background:#f0ece0;border:1px solid #c8c0b0;color:#1a1a2e;padding:11px 14px;text-align:left;cursor:pointer;font-family:"Libre Baskerville",serif;font-size:12.5px;line-height:1.5;transition:all .2s}
+.np-ch:hover{background:#e6e0d0;border-color:#1a1a2e;box-shadow:inset 3px 0 0 #8b0000}
+.np-ch-eff{font-size:10.5px;color:#999;margin-top:3px;font-style:italic}
+
+/* GAME OVER */
+#game-over{background:radial-gradient(ellipse at center,#0d0d2b,#000);overflow-y:auto;justify-content:flex-start;padding:40px 20px}
+.go-inner{display:flex;flex-direction:column;align-items:center;width:100%;max-width:700px;margin:0 auto}
+.go-emoji{font-size:80px;margin-bottom:16px;animation:pop .5s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.go-title{font-family:"Bebas Neue",cursive;font-size:clamp(38px,7vw,72px);letter-spacing:6px;text-align:center;margin-bottom:10px;line-height:1}
+.go-sub{font-family:"Playfair Display",serif;font-style:italic;font-size:clamp(14px,2vw,20px);color:#888;text-align:center;margin-bottom:32px;line-height:1.5;max-width:560px}
+.go-stats{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-bottom:32px}
+.go-stat{text-align:center;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);padding:14px 20px;min-width:90px}
+.go-stat-v{font-family:"Bebas Neue",cursive;font-size:36px;display:block;margin-bottom:3px}
+.go-stat-l{font-family:"Special Elite",cursive;font-size:9px;letter-spacing:2px;color:#777}
+.go-desc{font-family:"Playfair Display",serif;font-size:13px;color:#999;line-height:1.8;text-align:center;max-width:560px;margin-bottom:32px}
+.btn-restart{font-family:"Bebas Neue",cursive;font-size:22px;letter-spacing:4px;background:transparent;color:#ffd60a;border:2px solid #ffd60a;padding:13px 44px;cursor:pointer;transition:all .3s;margin:6px}
+.btn-restart:hover{background:rgba(255,214,10,.1);box-shadow:0 0 25px rgba(255,214,10,.3)}
+
+/* NOTIFICATION */
+.notif{position:fixed;top:16px;right:16px;background:rgba(0,0,0,.9);border-left:4px solid #ffd60a;padding:11px 15px;max-width:270px;z-index:9999;animation:notifIn .3s ease-out;backdrop-filter:blur(8px)}
+@keyframes notifIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+.notif-t{font-family:"Special Elite",cursive;font-size:10px;letter-spacing:2px;color:#ffd60a;margin-bottom:3px}
+.notif-m{font-family:"Libre Baskerville",serif;font-size:11.5px;color:#ddd;line-height:1.4}
+.notif.pos{border-color:#51cf66}.notif.pos .notif-t{color:#51cf66}
+.notif.neg{border-color:#ff6b6b}.notif.neg .notif-t{color:#ff6b6b}
+.notif.neu{border-color:#ffd60a}.notif.neu .notif-t{color:#ffd60a}
+
+/* Impeachment warning */
+.danger-glow{animation:dangerPulse 1.5s infinite}
+@keyframes dangerPulse{0%,100%{box-shadow:0 0 0 rgba(255,0,0,0)}50%{box-shadow:0 0 30px rgba(255,0,0,.4)}}
+
+/* Language toggle */
+#lang-btn{position:fixed;top:50%;right:0;left:auto;transform:translateY(-50%);z-index:99999;background:rgba(0,0,0,.82);border:1px solid rgba(255,255,255,.22);border-right:none;color:#ffd60a;font-family:"Special Elite",cursive;font-size:12px;letter-spacing:2px;padding:14px 8px;cursor:pointer;backdrop-filter:blur(6px);transition:all .2s;border-radius:4px 0 0 4px;writing-mode:vertical-rl;text-orientation:mixed}
+#lang-btn:hover{background:rgba(255,214,10,.15);border-color:#ffd60a;padding-right:12px}
